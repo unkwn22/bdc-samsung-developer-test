@@ -4,12 +4,12 @@ import java.util.Objects;
 
 public class MemberInfo {
 
-    public record RegisterMember(
+    public record MemberEntityInfo(
         String name,
         String email,
         String address
     ) {
-        public RegisterMember {
+        public MemberEntityInfo {
             Objects.requireNonNull(name);
             Objects.requireNonNull(email);
             Objects.requireNonNull(address);

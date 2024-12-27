@@ -92,10 +92,10 @@ public class MemberService {
         );
     }
 
-    public MemberInfo.RegisterMember constructMemberInfo(
+    public MemberInfo.MemberEntityInfo constructMemberInfo(
         MemberCommand.MemberEntityCommand memberEntityCommand
     ) {
-        return new MemberInfo.RegisterMember(
+        return new MemberInfo.MemberEntityInfo(
             memberEntityCommand.name(),
             memberEntityCommand.email(),
             memberEntityCommand.address()
