@@ -1,6 +1,7 @@
 package com.example.bdcsamsungdevelopertest.domain.service;
 
 import com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue;
+import com.example.bdcsamsungdevelopertest.common.util.ParseExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
 import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
@@ -50,7 +51,7 @@ public class MemberService {
         boolean patternValidation = Pattern.matches(EmailStaticValue.EMAIL_PATTERN_REGEX, email);
         // TODO exception
         // if(!patternValidation)
-        String parsedEmailId = email.substring(0, email.indexOf('@'));
+        String parsedEmailId = ParseExtension.subStringEmail(email);
         boolean emailExists = memberReadWrite.validateIfEmailExists(parsedEmailId);
         // TODO exception
         // if(emailExists)
