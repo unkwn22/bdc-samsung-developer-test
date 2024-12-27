@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+// TODO controller dto mismatch bad request handler needed
 @RestController
 @RequestMapping("/member/api/v1")
 public class MemberApiController {
@@ -23,7 +24,7 @@ public class MemberApiController {
     /**
      * 새로운 사용자를 생성
      * 201 created, response: 생성된 사용자 정보 (JSON)
-     * 404 bad, response: "유효성 검사 실패, 중복 이메일 등, 주소가 비어있는 경우, 주소가 너무 큰 경우)
+     * 400 bad, response: "유효성 검사 실패, 중복 이메일 등, 주소가 비어있는 경우, 주소가 너무 큰 경우)
      * */
     @PostMapping("/register")
     public ResponseEntity<MemberInfo.MemberEntity> registerMember(

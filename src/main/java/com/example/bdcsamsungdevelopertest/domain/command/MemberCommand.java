@@ -28,13 +28,13 @@ public class MemberCommand {
         }
     }
 
-    public record MemberEntityCommand(
+    public record MemberEntity(
         Long id,
         String name,
         String email,
         String address
     ) {
-        public MemberEntityCommand {
+        public MemberEntity {
             Objects.requireNonNull(id);
             Objects.requireNonNull(name);
             Objects.requireNonNull(email);

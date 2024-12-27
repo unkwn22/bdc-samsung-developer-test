@@ -12,6 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.regex.Pattern;
 
+import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.EMAIL_PATTERN_REGEX;
+import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.SAMSUNG_EMAIL;
+
 @Service
 public class MemberService {
 
@@ -24,7 +27,7 @@ public class MemberService {
     }
 
     @Transactional
-    public MemberCommand.MemberEntityCommand createMember(
+    public MemberCommand.MemberEntity createMember(
         MemberCommand.ValidatedRegister validatedRegisterCommand
     ) {
         Member beforeSaveMemberEntity = new Member(validatedRegisterCommand);
@@ -45,16 +48,16 @@ public class MemberService {
      *
      * ORDER:
      * 1. @samsung.com 패턴 regex 검사
-     * 2. subString한 이메일 아이디 중복 쿼리 검색
+     * 2. email subString
+     * 3. subString한 이메일 아이디 중복 쿼리 검색
+     * 4. 중복 유효검사
+     * 5. subString email 반환
     * */
-    @Transactional(readOnly = true)
-    public String validateAndReturnParsedEmail(String email) {
-        boolean patternValidation = Pattern.matches(EmailStaticValue.EMAIL_PATTERN_REGEX, email);
-        if(!patternValidation) throw new BadRequestException("이메일 형식이 맞지 않습니다.");
-        String parsedEmailId = ParseExtension.subStringEmail(email);
-        boolean emailExists = memberReadWrite.validateIfEmailExists(parsedEmailId);
-        if(emailExists) throw new BadRequestException("이미 존재하는 이메일 입니다.");
-        return parsedEmailId;
+    public String validateEmailForRegistrationAndReturnParsedEmail(String email) {
+        String parsedEmail = validateEmailPatternAndReturnParsedEmail(email);
+        boolean emailExists = searchByParsedEmail(parsedEmail);
+        validateDuplicateEmail(emailExists);
+        return parsedEmail;
     }
 
     /**
@@ -67,7 +70,7 @@ public class MemberService {
     }
 
     /**
-    * CONSTRUCTOR
+    * CONSTRUCTOR & METHODS
     * */
     public MemberCommand.ValidatedRegister constructValidatedRegisterCommand(
         MemberCommand.Register registerCommand,
@@ -80,10 +83,10 @@ public class MemberService {
         );
     }
 
-    public MemberCommand.MemberEntityCommand constructMemberEntityCommand(
+    public MemberCommand.MemberEntity constructMemberEntityCommand(
         Member member
     ) {
-        return new MemberCommand.MemberEntityCommand(
+        return new MemberCommand.MemberEntity(
             member.getId(),
             member.getName(),
             member.getEmail(),
@@ -92,12 +95,19 @@ public class MemberService {
     }
 
     public MemberInfo.MemberEntity constructMemberInfo(
-        MemberCommand.MemberEntityCommand memberEntityCommand
+        MemberCommand.MemberEntity memberEntityCommand
     ) {
         return new MemberInfo.MemberEntity(
             memberEntityCommand.name(),
-            memberEntityCommand.email(),
+            memberEntityCommand.email() + SAMSUNG_EMAIL,
             memberEntityCommand.address()
         );
+    }
+
+    /**
+     * 이메일 파싱
+     * */
+    private String parseEmail(String email) {
+        return ParseExtension.subStringEmail(email);
     }
 }

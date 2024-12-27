@@ -32,11 +32,11 @@ public class MemberFacade {
         MemberCommand.Register registerCommand
     ) {
         String validatedParsedEmail
-                = memberService.validateAndReturnParsedEmail(registerCommand.email());
+                = memberService.validateEmailForRegistrationAndReturnParsedEmail(registerCommand.email());
         memberService.validateAddressLength(registerCommand.address());
         MemberCommand.ValidatedRegister validatedRegisterCommand
                 = memberService.constructValidatedRegisterCommand(registerCommand, validatedParsedEmail);
-        MemberCommand.MemberEntityCommand memberEntityCommand
+        MemberCommand.MemberEntity memberEntityCommand
                 = memberService.createMember(validatedRegisterCommand);
         return memberService.constructMemberInfo(memberEntityCommand);
     }
