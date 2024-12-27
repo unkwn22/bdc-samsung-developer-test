@@ -1,5 +1,6 @@
 package com.example.bdcsamsungdevelopertest.domain.entity;
 
+import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -18,6 +19,14 @@ public class Member extends BaseTime {
         this.name = name;
         this.email = email;
         this.address = address;
+    }
+
+    public Member(
+        MemberCommand.ValidatedRegister validatedRegisterCommand
+    ) {
+        this.name = validatedRegisterCommand.name();
+        this.email = validatedRegisterCommand.email();
+        this.address = validatedRegisterCommand.address();
     }
 
     @Id
@@ -61,6 +70,10 @@ public class Member extends BaseTime {
 
     public String getAddress() {
         return address;
+    }
+
+    public List<Orders> getOrders() {
+        return orders;
     }
 
     /**
