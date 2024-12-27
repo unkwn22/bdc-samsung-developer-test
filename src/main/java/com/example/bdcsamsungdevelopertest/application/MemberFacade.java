@@ -28,7 +28,7 @@ public class MemberFacade {
      * 4. 유저 생성
      * 5. 유저 데이터 캡슐화
     * */
-    public MemberInfo.MemberEntityInfo requestMemberRegistration(
+    public MemberInfo.MemberEntity requestMemberRegistration(
         MemberCommand.Register registerCommand
     ) {
         String validatedParsedEmail

@@ -1,5 +1,6 @@
 package com.example.bdcsamsungdevelopertest.domain.service;
 
+import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue;
 import com.example.bdcsamsungdevelopertest.common.util.ParseExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
@@ -49,12 +50,10 @@ public class MemberService {
     @Transactional(readOnly = true)
     public String validateAndReturnParsedEmail(String email) {
         boolean patternValidation = Pattern.matches(EmailStaticValue.EMAIL_PATTERN_REGEX, email);
-        // TODO exception
-        // if(!patternValidation)
+        if(!patternValidation) throw new BadRequestException("이메일 형식이 맞지 않습니다.");
         String parsedEmailId = ParseExtension.subStringEmail(email);
         boolean emailExists = memberReadWrite.validateIfEmailExists(parsedEmailId);
-        // TODO exception
-        // if(emailExists)
+        if(emailExists) throw new BadRequestException("이미 존재하는 이메일 입니다.");
         return parsedEmailId;
     }
 
@@ -64,8 +63,7 @@ public class MemberService {
     public void validateAddressLength(String address) {
         int addressLength = address.length();
         boolean validatedLength = addressLength > 0 && addressLength < 101;
-        // TODO exception
-        //if(!validatedLength)
+        if(!validatedLength) throw new BadRequestException("주소 길이가 너무 큽니다.");
     }
 
     /**
@@ -93,10 +91,10 @@ public class MemberService {
         );
     }
 
-    public MemberInfo.MemberEntityInfo constructMemberInfo(
+    public MemberInfo.MemberEntity constructMemberInfo(
         MemberCommand.MemberEntityCommand memberEntityCommand
     ) {
-        return new MemberInfo.MemberEntityInfo(
+        return new MemberInfo.MemberEntity(
             memberEntityCommand.name(),
             memberEntityCommand.email(),
             memberEntityCommand.address()
