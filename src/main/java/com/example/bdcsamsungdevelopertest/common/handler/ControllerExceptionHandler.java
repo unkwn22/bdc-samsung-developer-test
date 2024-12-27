@@ -21,13 +21,13 @@ public class ControllerExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
-    protected ResponseEntity<CommonResponse> handleNotFoundException(BadRequestException e) {
+    protected ResponseEntity<CommonResponse> handleNotFoundException(NotFoundException e) {
         return new ResponseEntity<>(new CommonResponse(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(InternalServerException.class)
-    protected ResponseEntity<CommonResponse> handleInternalServerException(BadRequestException e) {
+    @ExceptionHandler(Exception.class)
+    protected ResponseEntity<CommonResponse> handleInternalServerException(Exception e) {
         return new ResponseEntity<>(new CommonResponse(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
