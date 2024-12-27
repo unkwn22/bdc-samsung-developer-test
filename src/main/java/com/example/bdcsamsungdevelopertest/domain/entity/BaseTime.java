@@ -1,4 +1,4 @@
-package com.example.bdcsamsungdevelopertest.domain;
+package com.example.bdcsamsungdevelopertest.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
