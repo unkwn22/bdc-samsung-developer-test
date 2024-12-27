@@ -1,7 +1,7 @@
 package com.example.bdcsamsungdevelopertest.domain.service;
 
 import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
-import com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue;
+import com.example.bdcsamsungdevelopertest.common.exception.NotFoundException;
 import com.example.bdcsamsungdevelopertest.common.util.ParseExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
@@ -10,6 +10,7 @@ import com.example.bdcsamsungdevelopertest.domain.interfaces.MemberReadWrite;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.EMAIL_PATTERN_REGEX;
@@ -33,6 +34,24 @@ public class MemberService {
         Member beforeSaveMemberEntity = new Member(validatedRegisterCommand);
         Member savedMember = memberReadWrite.saveMember(beforeSaveMemberEntity);
         return constructMemberEntityCommand(savedMember);
+    }
+
+    @Transactional(readOnly = true)
+    public MemberCommand.MemberEntity searchMember(
+        MemberCommand.Search searchCommand
+    ) {
+        Optional<Member> searchedMemberObject = memberReadWrite.findSpecificMember(
+            searchCommand.name(),
+            searchCommand.email(),
+            searchCommand.address()
+        );
+        if(searchedMemberObject.isEmpty()) throw new NotFoundException("존재하지 않는 유저 정보입니다.");
+        Member member = searchedMemberObject.get();
+        return constructMemberEntityCommand(member);
+    }
+
+    public boolean searchByParsedEmail(String parsedEmail) {
+        return memberReadWrite.validateIfEmailExists(parsedEmail);
     }
 
     /**
@@ -67,6 +86,22 @@ public class MemberService {
         int addressLength = address.length();
         boolean validatedLength = addressLength > 0 && addressLength < 101;
         if(!validatedLength) throw new BadRequestException("주소 길이가 너무 큽니다.");
+    }
+
+    /**
+     * @samsung 이메일 형식 유효성 검사
+     * */
+    public String validateEmailPatternAndReturnParsedEmail(String email) {
+        boolean patternValidation = Pattern.matches(EMAIL_PATTERN_REGEX, email);
+        if(!patternValidation) throw new BadRequestException("이메일 형식이 맞지 않습니다.");
+        return parseEmail(email);
+    }
+
+    /**
+    * 이메일 중복 확인
+    * */
+    public void validateDuplicateEmail(boolean emailDupValidation) {
+        if(emailDupValidation) throw new BadRequestException("이미 존재하는 이메일 입니다.");
     }
 
     /**

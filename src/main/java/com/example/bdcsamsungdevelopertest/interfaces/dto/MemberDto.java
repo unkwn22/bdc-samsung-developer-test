@@ -15,4 +15,16 @@ public class MemberDto {
             Objects.requireNonNull(address);
         }
     }
+
+    public record Search(
+        String name,
+        String email,
+        String address
+    ) {
+        public Search {
+            Objects.requireNonNull(name);
+            Objects.requireNonNull(email);
+            Objects.requireNonNull(address);
+        }
+    }
 }

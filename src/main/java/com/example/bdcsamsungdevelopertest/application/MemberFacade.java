@@ -40,4 +40,22 @@ public class MemberFacade {
                 = memberService.createMember(validatedRegisterCommand);
         return memberService.constructMemberInfo(memberEntityCommand);
     }
+
+    /**
+    * 사용자 조회 퍼사드
+     *
+     * DESC: 특정 유저를 조회 하기 위한 집합 메소드
+     *
+     * ORDER:
+     * 1. 이메일 형식 확인
+     * 2. 유저 조회
+     * 2. 반환 객체 캡슐화
+    * */
+    public MemberInfo.MemberEntity requestMemberSearch(
+        MemberCommand.Search searchCommand
+    ) {
+        memberService.validateEmailPatternAndReturnParsedEmail(searchCommand.email());
+        MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(searchCommand);
+        return memberService.constructMemberInfo(memberEntityCommand);
+    }
 }

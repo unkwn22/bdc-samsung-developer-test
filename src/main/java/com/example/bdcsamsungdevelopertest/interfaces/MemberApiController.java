@@ -39,4 +39,25 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(info);
     }
+
+    /**
+     * 특정 사용자 정보 조회
+     * ※ QueryParameter 정의가 없으며, 특정 유저 정보 (unique or 1) 을 반환해야 되기 때문에 유저 값 전체를 받는 것으로... ※
+     *
+     * 200 created, response: name, email, address
+     * 404 not found, response:
+     * */
+    @PostMapping("/find")
+    public ResponseEntity<MemberInfo.MemberEntity> searchMember(
+        @RequestBody MemberDto.Search body
+    ) {
+        MemberCommand.Search command = new MemberCommand.Search(
+            body.name(),
+            body.email(),
+            body.address()
+        );
+        MemberInfo.MemberEntity info = memberFacade.requestMemberSearch(command);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(info);
+    }
 }
