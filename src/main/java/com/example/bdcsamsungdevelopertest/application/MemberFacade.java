@@ -1,6 +1,7 @@
 package com.example.bdcsamsungdevelopertest.application;
 
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
+import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
 import com.example.bdcsamsungdevelopertest.domain.service.MemberService;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class MemberFacade {
 
-    private MemberService memberService;
+    private final MemberService memberService;
 
     public MemberFacade(
         MemberService memberService
@@ -48,13 +49,15 @@ public class MemberFacade {
      *
      * ORDER:
      * 1. 이메일 형식 확인
-     * 2. 유저 조회
-     * 2. 반환 객체 캡슐화
+     * 2. 유저 조회 커맨드 set
+     * 3. 유저 조회
+     * 4. 반환 객체 캡슐화
     * */
     public MemberInfo.MemberEntity requestMemberSearch(
-        MemberCommand.Search searchCommand
+        MemberRequestCommand searchCommand
     ) {
-        memberService.validateEmailPatternAndReturnParsedEmail(searchCommand.email());
+        String parsedEmail = memberService.validateEmailPatternAndReturnParsedEmail(searchCommand.getEmail());
+        searchCommand.setEmail(parsedEmail);
         MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(searchCommand);
         return memberService.toMemberInfo(memberEntityCommand);
     }

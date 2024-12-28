@@ -4,6 +4,7 @@ import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import com.example.bdcsamsungdevelopertest.common.exception.NotFoundException;
 import com.example.bdcsamsungdevelopertest.common.util.ParseExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
+import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
 import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.MemberReadWrite;
@@ -19,7 +20,7 @@ import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.S
 @Service
 public class MemberService {
 
-    private MemberReadWrite memberReadWrite;
+    private final MemberReadWrite memberReadWrite;
 
     public MemberService(
         MemberReadWrite memberReadWrite
@@ -38,12 +39,12 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberCommand.MemberEntity searchMember(
-        MemberCommand.Search searchCommand
+        MemberRequestCommand searchCommand
     ) {
         Optional<Member> searchedMemberObject = memberReadWrite.findSpecificMember(
-            searchCommand.name(),
-            searchCommand.email(),
-            searchCommand.address()
+            searchCommand.getName(),
+            searchCommand.getEmail(),
+            searchCommand.getAddress()
         );
         if(searchedMemberObject.isEmpty()) throw new NotFoundException("존재하지 않는 유저 정보입니다.");
         Member member = searchedMemberObject.get();
