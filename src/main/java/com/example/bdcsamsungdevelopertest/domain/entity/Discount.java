@@ -21,6 +21,7 @@ public class Discount extends BaseTime {
     @Column(name = "id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "discountType", nullable = false)
     protected DiscountType discountType = DiscountType.AMOUNT;
 
