@@ -1,6 +1,7 @@
 package com.example.bdcsamsungdevelopertest.domain.service;
 
 import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
+import com.example.bdcsamsungdevelopertest.common.exception.NotFoundException;
 import com.example.bdcsamsungdevelopertest.domain.command.DiscountCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.ProductEntityCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.ProductRequestCommand;
@@ -42,6 +43,13 @@ public class ProductService {
         return toProductEntityCommand(savedProduct);
     }
 
+    @Transactional(readOnly = true)
+    public ProductEntityCommand searchProduct(Long id) {
+        Optional<Product> searchedProductObject = productReadWrite.findSpecificProduct(id);
+        Product product = productGetOrThrow(searchedProductObject);
+        return toProductEntityCommand(product);
+    }
+
     /**
      * VALIDATION
      * */
@@ -62,6 +70,14 @@ public class ProductService {
 
     public void validatePriceRange(Integer price) {
         if(price < 1 || 999 < price) throw new BadRequestException("가격 입력이 잘못 되었습니다.");
+    }
+
+    /**
+     * Optional product 객체 유효검사
+     * */
+    public Product productGetOrThrow(Optional<Product> searchedProductObject) {
+        if(searchedProductObject.isEmpty()) throw new NotFoundException("존재하지 않는 상품 정보입니다.");
+        return searchedProductObject.get();
     }
 
     /**

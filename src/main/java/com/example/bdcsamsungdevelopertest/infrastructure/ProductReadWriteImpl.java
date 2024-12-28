@@ -5,6 +5,8 @@ import com.example.bdcsamsungdevelopertest.domain.interfaces.ProductReadWrite;
 import com.example.bdcsamsungdevelopertest.infrastructure.jpa.ProductRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class ProductReadWriteImpl implements ProductReadWrite {
 
@@ -19,6 +21,11 @@ public class ProductReadWriteImpl implements ProductReadWrite {
     @Override
     public boolean validateIfNameExists(String name) {
         return productRepository.existsByName(name);
+    }
+
+    @Override
+    public Optional<Product> findSpecificProduct(Long id) {
+        return productRepository.findById(id);
     }
 
     @Override

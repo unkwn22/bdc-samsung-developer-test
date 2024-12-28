@@ -6,10 +6,7 @@ import com.example.bdcsamsungdevelopertest.domain.info.ProductInfo;
 import com.example.bdcsamsungdevelopertest.interfaces.dto.ProductRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/product/api/v1")
@@ -39,6 +36,23 @@ public class ProductApiController {
         );
         ProductInfo info = productFacade.requestProductRegistration(command);
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(info);
+    }
+
+    /**
+     * 특정 상품 정보 조회
+     *
+     * PathVariable {productId} (Long)
+     * 200 ok: response: 해당 상품 정보 (discount 포함)
+     * 404 notfound, response:
+     * */
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductInfo> searchProduct(
+        @PathVariable("productId") Long id
+    ) {
+        ProductRequestCommand command = new ProductRequestCommand(id);
+        ProductInfo info = productFacade.requestProductSearch(command);
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }
 }
