@@ -1,5 +1,6 @@
 package com.example.bdcsamsungdevelopertest.domain.entity;
 
+import com.example.bdcsamsungdevelopertest.domain.command.ProductRequestCommand;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -26,6 +27,13 @@ public class Product extends BaseTime {
         this.name = name;
         this.price = price;
         this.discount = discount;
+    }
+
+    public Product(
+        ProductRequestCommand registerCommand
+    ) {
+        this.name = registerCommand.getName();
+        this.price = registerCommand.getPrice();
     }
 
     @Id

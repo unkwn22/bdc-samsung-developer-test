@@ -135,6 +135,7 @@ public class MemberService {
     /**
     * 이메일 중복 확인
     * */
+    // TODO change to private
     public void validateDuplicateEmail(boolean emailDupValidation) {
         if(emailDupValidation) throw new BadRequestException("이미 존재하는 이메일 입니다.");
     }
