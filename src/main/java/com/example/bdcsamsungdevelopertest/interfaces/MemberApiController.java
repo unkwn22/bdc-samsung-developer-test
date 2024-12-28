@@ -1,6 +1,7 @@
 package com.example.bdcsamsungdevelopertest.interfaces;
 
 import com.example.bdcsamsungdevelopertest.application.MemberFacade;
+import com.example.bdcsamsungdevelopertest.common.util.PageableExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
@@ -8,6 +9,8 @@ import com.example.bdcsamsungdevelopertest.interfaces.dto.MemberDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 // TODO controller dto mismatch bad request handler needed
 @RestController
@@ -60,5 +63,30 @@ public class MemberApiController {
         MemberInfo.MemberEntity info = memberFacade.requestMemberSearch(command);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
+    }
+
+    /**
+     * 전체 사용자 조회
+     * ※ pagination 처리를 위한 queryParameter 상세 설명이 없기에 임의로 정의 ※
+     * 응답 예제에 totalCount이 없기에 리스트만 반환
+     * 응답 예제에 sortDirection 디폴트가 없기에 desc 디폴트
+     * 빈 리스트일시 404 예외
+     * size가 0보다 작을때 예외 명시가 없어서 400으로 임의
+     *
+     * 200 OK, response: [{name, email, address},...]
+     * 404 not found, response:
+     * */
+    @GetMapping("/search")
+    public ResponseEntity<List<MemberInfo.MemberEntity>> searchMembers(
+        @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+        @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+        @RequestParam(value = "reqSortDir", required = false, defaultValue = "desc") String reqSortDir
+    ) {
+        MemberCommand.SearchList command = new MemberCommand.SearchList(
+            PageableExtension.toPageable(page, size, reqSortDir)
+        );
+        List<MemberInfo.MemberEntity> infos = memberFacade.requestSearchMembers(command);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(infos);
     }
 }

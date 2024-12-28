@@ -1,5 +1,7 @@
 package com.example.bdcsamsungdevelopertest.domain.command;
 
+import org.springframework.data.domain.Pageable;
+
 import java.util.Objects;
 
 public class MemberCommand {
@@ -42,6 +44,7 @@ public class MemberCommand {
         }
     }
 
+    // TODO deprecated
     public record Search(
         String name,
         String email,
@@ -53,4 +56,6 @@ public class MemberCommand {
             Objects.requireNonNull(address);
         }
     }
+
+    public record SearchList(Pageable pageable) {}
 }

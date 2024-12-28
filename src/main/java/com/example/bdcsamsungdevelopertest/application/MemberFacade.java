@@ -6,6 +6,8 @@ import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
 import com.example.bdcsamsungdevelopertest.domain.service.MemberService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MemberFacade {
 
@@ -60,5 +62,21 @@ public class MemberFacade {
         searchCommand.setEmail(parsedEmail);
         MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(searchCommand);
         return memberService.toMemberInfo(memberEntityCommand);
+    }
+
+    /**
+    * 전체 사용자 조회 퍼사드
+     *
+     * DESC: pagination 요청으로 유저 리스트 반환
+     *
+     * ORDER:
+     * 1. pageable 객체로 유저 리스트 조회
+     * 2. info 리스트로 변환 후 반환
+    * */
+    public List<MemberInfo.MemberEntity> requestSearchMembers(
+        MemberCommand.SearchList searchListCommand
+    ) {
+        List<MemberCommand.MemberEntity> memberEntitiesCommand = memberService.searchMembers(searchListCommand);
+        return memberService.toMemberInfos(memberEntitiesCommand);
     }
 }

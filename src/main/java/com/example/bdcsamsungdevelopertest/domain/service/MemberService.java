@@ -11,6 +11,8 @@ import com.example.bdcsamsungdevelopertest.domain.interfaces.MemberReadWrite;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
@@ -53,6 +55,15 @@ public class MemberService {
 
     public boolean searchByParsedEmail(String parsedEmail) {
         return memberReadWrite.validateIfEmailExists(parsedEmail);
+    }
+
+    @Transactional(readOnly = true)
+    public List<MemberCommand.MemberEntity> searchMembers(
+        MemberCommand.SearchList searchListCommand
+    ) {
+        List<Member> searchedMembers = memberReadWrite.customFindMembers(searchListCommand.pageable());
+        if(searchedMembers.isEmpty()) throw new NotFoundException("유저 기록이 없습니다.");
+        return toMemberEntitiesCommand(searchedMembers);
     }
 
     /**
@@ -138,6 +149,39 @@ public class MemberService {
             memberEntityCommand.email() + SAMSUNG_EMAIL,
             memberEntityCommand.address()
         );
+    }
+
+    public List<MemberCommand.MemberEntity> toMemberEntitiesCommand(
+        List<Member> members
+    ) {
+        List<MemberCommand.MemberEntity> command = new ArrayList<>();
+        members.forEach( iterateMember ->
+            command.add(
+                new MemberCommand.MemberEntity(
+                    iterateMember.getId(),
+                    iterateMember.getName(),
+                    iterateMember.getEmail() + SAMSUNG_EMAIL,
+                    iterateMember.getAddress()
+                )
+            )
+        );
+        return command;
+    }
+
+    public List<MemberInfo.MemberEntity> toMemberInfos(
+        List<MemberCommand.MemberEntity> memberEntitiesCommand
+    ) {
+        List<MemberInfo.MemberEntity> infos = new ArrayList<>();
+        memberEntitiesCommand.forEach( iterateMemberCommand ->
+            infos.add(
+                new MemberInfo.MemberEntity(
+                    iterateMemberCommand.name(),
+                    iterateMemberCommand.email() + SAMSUNG_EMAIL,
+                    iterateMemberCommand.address()
+                )
+            )
+        );
+        return infos;
     }
 
     /**
