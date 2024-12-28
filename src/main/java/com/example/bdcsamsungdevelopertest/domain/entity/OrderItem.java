@@ -81,4 +81,12 @@ public class OrderItem extends BaseTime {
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
     }
+
+    /**
+     * toString
+     * */
+    @Override
+    public String toString() {
+        return "OrderItem{" + "id=" + id + ", orderPrice=" + orderPrice + ", quantity=" + quantity + '}';
+    }
 }

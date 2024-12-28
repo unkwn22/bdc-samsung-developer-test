@@ -94,6 +94,10 @@ public class Orders extends BaseTime {
         return member;
     }
 
+    public List<OrderItem> getOrderedItems() {
+        return orderedItems;
+    }
+
     /**
      * SETTERS
      * */
@@ -120,5 +124,20 @@ public class Orders extends BaseTime {
     public enum OrderStatus {
         ORDERED,
         CANCELLED,
+    }
+
+    /**
+     * toString
+     * */
+    @Override
+    public String toString() {
+        return "Orders{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", orderDate=" + orderDate +
+                ", totalAmount=" + totalAmount +
+                ", address='" + address + '\'' +
+                ", orderStatus=" + orderStatus +
+                '}';
     }
 }
