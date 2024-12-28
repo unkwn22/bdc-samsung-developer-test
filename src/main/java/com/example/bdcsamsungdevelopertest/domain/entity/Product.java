@@ -50,7 +50,10 @@ public class Product extends BaseTime {
     /**
      * RELATIONS
      * */
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(
+        cascade = CascadeType.ALL,
+        fetch = FetchType.EAGER
+    )
     @JoinColumn(name = "discount_id", nullable = true)
     protected Discount discount;
 
