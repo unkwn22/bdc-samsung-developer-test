@@ -43,12 +43,7 @@ public class MemberService {
     public MemberCommand.MemberEntity searchMember(
         MemberRequestCommand searchCommand
     ) {
-        Optional<Member> searchedMemberObject = memberReadWrite.findSpecificMember(
-            searchCommand.getName(),
-            searchCommand.getEmail(),
-            searchCommand.getAddress()
-        );
-        Member member = memberGetOrThrow(searchedMemberObject);
+        Member member = fullMemberSearch(searchCommand);
         return toMemberEntityCommand(member);
     }
 
@@ -72,6 +67,17 @@ public class MemberService {
         Optional<Member> searchedMemberObject = memberReadWrite.findSpecificMemberByEmail(updateCommand.getEmail());
         Member member = memberGetOrThrow(searchedMemberObject);
         member.updateMember(updateCommand);
+    }
+
+    private Member fullMemberSearch(
+        MemberRequestCommand commonCommand
+    ) {
+        Optional<Member> searchedMemberObject = memberReadWrite.findSpecificMember(
+            commonCommand.getName(),
+            commonCommand.getEmail(),
+            commonCommand.getAddress()
+        );
+        return memberGetOrThrow(searchedMemberObject);
     }
 
     /**
