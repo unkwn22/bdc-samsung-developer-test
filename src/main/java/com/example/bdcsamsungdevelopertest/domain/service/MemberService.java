@@ -47,6 +47,7 @@ public class MemberService {
         return toMemberEntityCommand(member);
     }
 
+    @Transactional(readOnly = true)
     public boolean searchByParsedEmail(String parsedEmail) {
         return memberReadWrite.validateIfEmailExists(parsedEmail);
     }
