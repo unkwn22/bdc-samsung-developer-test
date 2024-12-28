@@ -79,4 +79,27 @@ public class MemberFacade {
         List<MemberCommand.MemberEntity> memberEntitiesCommand = memberService.searchMembers(searchListCommand);
         return memberService.toMemberInfos(memberEntitiesCommand);
     }
+
+    /**
+    * 특정 사용자 수정 퍼사드
+     *
+     * DESC: 영속성 컨텍스트를 이용한 객체 update
+     *
+     * ORDER:
+     * 1. 요청 이메일 형식 유효성 검사
+     * 2. 요청 주소 유효성 검사
+     * 3. 유효한 이메일 다시 command에 set
+     * 4. 유저 조회 및 수정
+     * 5. info 객체로 변환 후 반환
+    * */
+    public MemberInfo.MemberEntity requestMemberUpdate(
+        MemberRequestCommand updateCommand
+    ) {
+        String parsedEmail = memberService.validateEmailPatternAndReturnParsedEmail(updateCommand.getEmail());
+        memberService.validateAddressLength(updateCommand.getAddress());
+        updateCommand.setEmail(parsedEmail);
+        memberService.findMemberAndUpdate(updateCommand);
+        MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(updateCommand);
+        return memberService.toMemberInfo(memberEntityCommand);
+    }
 }

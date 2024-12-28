@@ -89,4 +89,30 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(infos);
     }
+
+    /**
+    * 특정 사용자 정보 수정
+     * ※ 특정 사용자 정보 수정을 위한 유저 객체에 고유 키, uuid가 없음으로 (명세 없음) 또한
+     * queryParameter 또는 pathVariable 명세가 없기 RequestBody에 고유키 검색을 email로 선정
+     *
+     * ※ 현 API 조건에 404 notfound가 존재, 유효한 유저 데이터를 먼저 조회 후 수정한 다음 결과 반환 해주기로...
+     * Patch수정은 아닌듯해 보여서 Skip
+     *
+     * 200 OK, response: 수정 된 {name, email, address}
+     * 400 bad request
+     * 404 not found, response:
+    * */
+    @PutMapping("/update")
+    public ResponseEntity<MemberInfo.MemberEntity> updateMember(
+        @RequestBody MemberDto.Update body
+    ) {
+        MemberRequestCommand command = new MemberRequestCommand(
+            body.name(),
+            body.email(),
+            body.address()
+        );
+        MemberInfo.MemberEntity info = memberFacade.requestMemberUpdate(command);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(info);
+    }
 }

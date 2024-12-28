@@ -48,8 +48,7 @@ public class MemberService {
             searchCommand.getEmail(),
             searchCommand.getAddress()
         );
-        if(searchedMemberObject.isEmpty()) throw new NotFoundException("존재하지 않는 유저 정보입니다.");
-        Member member = searchedMemberObject.get();
+        Member member = memberGetOrThrow(searchedMemberObject);
         return toMemberEntityCommand(member);
     }
 
@@ -64,6 +63,15 @@ public class MemberService {
         List<Member> searchedMembers = memberReadWrite.customFindMembers(searchListCommand.pageable());
         if(searchedMembers.isEmpty()) throw new NotFoundException("유저 기록이 없습니다.");
         return toMemberEntitiesCommand(searchedMembers);
+    }
+
+    @Transactional
+    public void findMemberAndUpdate(
+        MemberRequestCommand updateCommand
+    ) {
+        Optional<Member> searchedMemberObject = memberReadWrite.findSpecificMemberByEmail(updateCommand.getEmail());
+        Member member = memberGetOrThrow(searchedMemberObject);
+        member.updateMember(updateCommand);
     }
 
     /**
@@ -114,6 +122,14 @@ public class MemberService {
     * */
     public void validateDuplicateEmail(boolean emailDupValidation) {
         if(emailDupValidation) throw new BadRequestException("이미 존재하는 이메일 입니다.");
+    }
+
+    /**
+    * Optional member 객체 유효검사
+    * */
+    public Member memberGetOrThrow(Optional<Member> searchedMemberObject) {
+        if(searchedMemberObject.isEmpty()) throw new NotFoundException("존재하지 않는 유저 정보입니다.");
+        return searchedMemberObject.get();
     }
 
     /**

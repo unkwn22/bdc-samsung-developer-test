@@ -1,6 +1,7 @@
 package com.example.bdcsamsungdevelopertest.domain.entity;
 
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
+import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -27,6 +28,13 @@ public class Member extends BaseTime {
         this.name = validatedRegisterCommand.name();
         this.email = validatedRegisterCommand.email();
         this.address = validatedRegisterCommand.address();
+    }
+
+    public void updateMember(
+        MemberRequestCommand updateCommand
+    ) {
+        this.setName(updateCommand.getName());
+        this.setAddress(updateCommand.getAddress());
     }
 
     @Id

@@ -27,4 +27,16 @@ public class MemberDto {
             Objects.requireNonNull(address);
         }
     }
+
+    public record Update(
+        String name,
+        String email,
+        String address
+    ) {
+        public Update {
+            Objects.requireNonNull(name);
+            Objects.requireNonNull(email);
+            Objects.requireNonNull(address);
+        }
+    }
 }

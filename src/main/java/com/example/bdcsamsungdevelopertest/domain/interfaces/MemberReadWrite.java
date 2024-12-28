@@ -1,5 +1,6 @@
 package com.example.bdcsamsungdevelopertest.domain.interfaces;
 
+import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +22,13 @@ public interface MemberReadWrite {
 
     List<Member> customFindMembers(Pageable pageable);
 
+    Optional<Member> findSpecificMemberByEmail(String email);
+
     /**
     * WRITE
     * */
     Member saveMember(Member member);
+
+    // TODO use if command contains entity id
+    void customUpdateMember(MemberRequestCommand updateCommand);
 }

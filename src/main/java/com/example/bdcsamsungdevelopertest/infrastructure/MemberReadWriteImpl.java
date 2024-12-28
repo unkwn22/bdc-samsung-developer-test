@@ -1,5 +1,6 @@
 package com.example.bdcsamsungdevelopertest.infrastructure;
 
+import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.MemberReadWrite;
 import com.example.bdcsamsungdevelopertest.infrastructure.jpa.MemberRepository;
@@ -46,7 +47,17 @@ public class MemberReadWriteImpl implements MemberReadWrite {
     }
 
     @Override
+    public Optional<Member> findSpecificMemberByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
+
+    @Override
     public Member saveMember(Member member) {
         return memberRepository.save(member);
+    }
+
+    @Override
+    public void customUpdateMember(MemberRequestCommand updateCommand) {
+        memberQueryRepository.updateMember(updateCommand);
     }
 }
