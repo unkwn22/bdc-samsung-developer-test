@@ -102,4 +102,20 @@ public class MemberFacade {
         MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(updateCommand);
         return memberService.toMemberInfo(memberEntityCommand);
     }
+
+    /**
+    * 특정 사용자 삭제 퍼사드
+     *
+     * ORDER:
+     * 1. 요청 이메일 형식 유효성 검사
+     * 2. 유효한 이메일 다시 command에 set
+     * 3. 사용자 검색 후 삭제
+    * */
+    public void requestMemberUnRegistration(
+        MemberRequestCommand deleteCommand
+    ) {
+        String parsedEmail = memberService.validateEmailPatternAndReturnParsedEmail(deleteCommand.getEmail());
+        deleteCommand.setEmail(parsedEmail);
+        memberService.findMemberAndDelete(deleteCommand);
+    }
 }

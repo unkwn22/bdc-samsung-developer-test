@@ -2,6 +2,7 @@ package com.example.bdcsamsungdevelopertest.interfaces.dto;
 
 import java.util.Objects;
 
+// TODO refactor commonly used dtos to one single record
 public class MemberDto {
 
     public record Register(
@@ -34,6 +35,18 @@ public class MemberDto {
         String address
     ) {
         public Update {
+            Objects.requireNonNull(name);
+            Objects.requireNonNull(email);
+            Objects.requireNonNull(address);
+        }
+    }
+
+    public record Delete(
+        String name,
+        String email,
+        String address
+    ) {
+        public Delete {
             Objects.requireNonNull(name);
             Objects.requireNonNull(email);
             Objects.requireNonNull(address);

@@ -31,4 +31,6 @@ public interface MemberReadWrite {
 
     // TODO use if command contains entity id
     void customUpdateMember(MemberRequestCommand updateCommand);
+
+    void deleteMember(Member member);
 }

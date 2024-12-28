@@ -60,4 +60,9 @@ public class MemberReadWriteImpl implements MemberReadWrite {
     public void customUpdateMember(MemberRequestCommand updateCommand) {
         memberQueryRepository.updateMember(updateCommand);
     }
+
+    @Override
+    public void deleteMember(Member member) {
+        memberRepository.delete(member);
+    }
 }

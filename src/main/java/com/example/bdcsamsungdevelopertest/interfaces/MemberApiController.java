@@ -115,4 +115,25 @@ public class MemberApiController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }
+
+    /**
+     * 특정 사용자 삭제
+     * ※ 특정 사용자 정보 수정을 위한 유저 객체에 고유 키, uuid가 없음으로 (명세 없음) 또한
+     * queryParameter 또는 pathVariable 명세가 없기 RequestBody에 전체 사용자 정보로 조회 후 삭제
+     *
+     * 204 no content, response:
+     * 404 not found, response:
+     * */
+    @DeleteMapping("/unregister")
+    public ResponseEntity<Void> deleteMember(
+        @RequestBody MemberDto.Delete body
+    ) {
+        MemberRequestCommand command = new MemberRequestCommand(
+            body.name(),
+            body.email(),
+            body.address()
+        );
+        memberFacade.requestMemberUnRegistration(command);
+        return ResponseEntity.noContent().build();
+    }
 }

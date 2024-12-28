@@ -81,6 +81,14 @@ public class MemberService {
         return memberGetOrThrow(searchedMemberObject);
     }
 
+    @Transactional
+    public void findMemberAndDelete(
+        MemberRequestCommand deleteCommand
+    ) {
+        Member member = fullMemberSearch(deleteCommand);
+        memberReadWrite.deleteMember(member);
+    }
+
     /**
     * VALIDATION
     * */
