@@ -5,7 +5,7 @@ import com.example.bdcsamsungdevelopertest.common.util.PageableExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
-import com.example.bdcsamsungdevelopertest.interfaces.dto.MemberDto;
+import com.example.bdcsamsungdevelopertest.interfaces.dto.MemberRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,7 +32,7 @@ public class MemberApiController {
      * */
     @PostMapping("/register")
     public ResponseEntity<MemberInfo.MemberEntity> registerMember(
-        @RequestBody MemberDto.Register body
+        @RequestBody MemberRequestDto body
     ) {
         MemberCommand.Register command = new MemberCommand.Register(
             body.name(),
@@ -53,7 +53,7 @@ public class MemberApiController {
      * */
     @PostMapping("/find")
     public ResponseEntity<MemberInfo.MemberEntity> searchMember(
-        @RequestBody MemberDto.Search body
+        @RequestBody MemberRequestDto body
     ) {
         MemberRequestCommand command = new MemberRequestCommand(
             body.name(),
@@ -104,7 +104,7 @@ public class MemberApiController {
     * */
     @PutMapping("/update")
     public ResponseEntity<MemberInfo.MemberEntity> updateMember(
-        @RequestBody MemberDto.Update body
+        @RequestBody MemberRequestDto body
     ) {
         MemberRequestCommand command = new MemberRequestCommand(
             body.name(),
@@ -126,7 +126,7 @@ public class MemberApiController {
      * */
     @DeleteMapping("/unregister")
     public ResponseEntity<Void> deleteMember(
-        @RequestBody MemberDto.Delete body
+        @RequestBody MemberRequestDto body
     ) {
         MemberRequestCommand command = new MemberRequestCommand(
             body.name(),
