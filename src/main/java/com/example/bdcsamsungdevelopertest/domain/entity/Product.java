@@ -74,6 +74,10 @@ public class Product extends BaseTime {
         return discount;
     }
 
+    public List<OrderItem> getOrderedItems() {
+        return orderedItems;
+    }
+
     /**
      * SETTERS
      * */
@@ -83,5 +87,17 @@ public class Product extends BaseTime {
 
     public void setPrice(Integer price) {
         this.price = price;
+    }
+
+    public void setDiscount(Discount discount) {
+        this.discount = discount;
+    }
+
+    /**
+    * toString
+    * */
+    @Override
+    public String toString() {
+        return "Product{" + "id=" + id + ", name='" + name + '\'' + ", price=" + price + '}';
     }
 }

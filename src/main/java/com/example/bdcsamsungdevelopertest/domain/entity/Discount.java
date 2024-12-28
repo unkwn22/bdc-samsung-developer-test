@@ -51,4 +51,12 @@ public class Discount extends BaseTime {
     public enum DiscountType {
         AMOUNT,
     }
+
+    /**
+     * toString
+     * */
+    @Override
+    public String toString() {
+        return "Discount{" + "id=" + id + ", discountType=" + discountType + ", discountValue=" + discountValue + '}';
+    }
 }
