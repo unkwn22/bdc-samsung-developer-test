@@ -35,10 +35,10 @@ public class MemberFacade {
                 = memberService.validateEmailForRegistrationAndReturnParsedEmail(registerCommand.email());
         memberService.validateAddressLength(registerCommand.address());
         MemberCommand.ValidatedRegister validatedRegisterCommand
-                = memberService.constructValidatedRegisterCommand(registerCommand, validatedParsedEmail);
+                = memberService.toValidatedRegisterCommand(registerCommand, validatedParsedEmail);
         MemberCommand.MemberEntity memberEntityCommand
                 = memberService.createMember(validatedRegisterCommand);
-        return memberService.constructMemberInfo(memberEntityCommand);
+        return memberService.toMemberInfo(memberEntityCommand);
     }
 
     /**
@@ -56,6 +56,6 @@ public class MemberFacade {
     ) {
         memberService.validateEmailPatternAndReturnParsedEmail(searchCommand.email());
         MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(searchCommand);
-        return memberService.constructMemberInfo(memberEntityCommand);
+        return memberService.toMemberInfo(memberEntityCommand);
     }
 }

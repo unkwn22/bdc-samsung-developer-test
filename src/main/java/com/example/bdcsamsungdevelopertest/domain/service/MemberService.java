@@ -33,7 +33,7 @@ public class MemberService {
     ) {
         Member beforeSaveMemberEntity = new Member(validatedRegisterCommand);
         Member savedMember = memberReadWrite.saveMember(beforeSaveMemberEntity);
-        return constructMemberEntityCommand(savedMember);
+        return toMemberEntityCommand(savedMember);
     }
 
     @Transactional(readOnly = true)
@@ -47,7 +47,7 @@ public class MemberService {
         );
         if(searchedMemberObject.isEmpty()) throw new NotFoundException("존재하지 않는 유저 정보입니다.");
         Member member = searchedMemberObject.get();
-        return constructMemberEntityCommand(member);
+        return toMemberEntityCommand(member);
     }
 
     public boolean searchByParsedEmail(String parsedEmail) {
@@ -107,7 +107,7 @@ public class MemberService {
     /**
     * CONSTRUCTOR & METHODS
     * */
-    public MemberCommand.ValidatedRegister constructValidatedRegisterCommand(
+    public MemberCommand.ValidatedRegister toValidatedRegisterCommand(
         MemberCommand.Register registerCommand,
         String parsedEmail
     ) {
@@ -118,7 +118,7 @@ public class MemberService {
         );
     }
 
-    public MemberCommand.MemberEntity constructMemberEntityCommand(
+    public MemberCommand.MemberEntity toMemberEntityCommand(
         Member member
     ) {
         return new MemberCommand.MemberEntity(
@@ -129,7 +129,7 @@ public class MemberService {
         );
     }
 
-    public MemberInfo.MemberEntity constructMemberInfo(
+    public MemberInfo.MemberEntity toMemberInfo(
         MemberCommand.MemberEntity memberEntityCommand
     ) {
         return new MemberInfo.MemberEntity(
