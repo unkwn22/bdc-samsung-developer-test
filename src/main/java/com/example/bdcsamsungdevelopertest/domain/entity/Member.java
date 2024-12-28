@@ -64,6 +64,10 @@ public class Member extends BaseTime {
         return address;
     }
 
+    public List<Orders> getOrders() {
+        return orders;
+    }
+
     /**
     * SETTERS
     * */
@@ -77,5 +81,13 @@ public class Member extends BaseTime {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    /**
+     * toString
+     * */
+    @Override
+    public String toString() {
+        return "Member{" + "id=" + id + ", name='" + name + '\'' + ", email='" + email + '\'' + ", address='" + address + '\'' + '}';
     }
 }
