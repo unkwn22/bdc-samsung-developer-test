@@ -57,7 +57,9 @@ public class Orders extends BaseTime {
     @OneToMany(
         mappedBy = "orders",
         fetch = FetchType.LAZY,
-        targetEntity = OrderItem.class
+        targetEntity = OrderItem.class,
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
     )
     protected List<OrderItem> orderedItems;
 

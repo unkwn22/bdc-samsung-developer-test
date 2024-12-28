@@ -40,7 +40,8 @@ public class Member extends BaseTime {
     @OneToMany(
         mappedBy = "member",
         fetch = FetchType.LAZY,
-        targetEntity = Orders.class
+        targetEntity = Orders.class,
+        cascade = CascadeType.ALL
     )
     protected List<Orders> orders;
 
