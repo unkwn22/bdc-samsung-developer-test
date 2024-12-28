@@ -2,6 +2,8 @@ package com.example.bdcsamsungdevelopertest.domain.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "product")
 public class Product extends BaseTime {
@@ -40,9 +42,18 @@ public class Product extends BaseTime {
     /**
      * RELATIONS
      * */
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "discount_id", nullable = true)
     protected Discount discount;
+
+    @OneToMany(
+        mappedBy = "product",
+        fetch = FetchType.LAZY,
+        targetEntity = OrderItem.class,
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    protected List<OrderItem> orderedItems;
 
     /**
      * GETTERS
