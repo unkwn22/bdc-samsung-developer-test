@@ -27,20 +27,17 @@ public class MemberFacade {
      * ORDER:
      * 1. 이메일 유효성 검사
      * 2. 주소 유효성 검사
-     * 3. 새로운 command로 유저 객체 캡슐화
+     * 3. 유효한 이메일 다시 command에 set
      * 4. 유저 생성
      * 5. 유저 데이터 캡슐화
     * */
     public MemberInfo.MemberEntity requestMemberRegistration(
-        MemberCommand.Register registerCommand
+        MemberRequestCommand registerCommand
     ) {
-        String validatedParsedEmail
-                = memberService.validateEmailForRegistrationAndReturnParsedEmail(registerCommand.email());
-        memberService.validateAddressLength(registerCommand.address());
-        MemberCommand.ValidatedRegister validatedRegisterCommand
-                = memberService.toValidatedRegisterCommand(registerCommand, validatedParsedEmail);
-        MemberCommand.MemberEntity memberEntityCommand
-                = memberService.createMember(validatedRegisterCommand);
+        String validatedParsedEmail = memberService.validateEmailForRegistrationAndReturnParsedEmail(registerCommand.getEmail());
+        memberService.validateAddressLength(registerCommand.getAddress());
+        registerCommand.setEmail(validatedParsedEmail);
+        MemberCommand.MemberEntity memberEntityCommand = memberService.createMember(registerCommand);
         return memberService.toMemberInfo(memberEntityCommand);
     }
 

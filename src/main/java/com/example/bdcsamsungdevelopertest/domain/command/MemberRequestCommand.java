@@ -1,6 +1,5 @@
 package com.example.bdcsamsungdevelopertest.domain.command;
 
-// TODO change all related record types to this class
 public class MemberRequestCommand {
     private Long id;                                    // for update uses only
     private String name;

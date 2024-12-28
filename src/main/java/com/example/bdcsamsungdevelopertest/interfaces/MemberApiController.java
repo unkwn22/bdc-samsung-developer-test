@@ -34,7 +34,7 @@ public class MemberApiController {
     public ResponseEntity<MemberInfo.MemberEntity> registerMember(
         @RequestBody MemberRequestDto body
     ) {
-        MemberCommand.Register command = new MemberCommand.Register(
+        MemberRequestCommand command = new MemberRequestCommand(
             body.name(),
             body.email(),
             body.address()

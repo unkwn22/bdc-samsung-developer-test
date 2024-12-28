@@ -32,9 +32,9 @@ public class MemberService {
 
     @Transactional
     public MemberCommand.MemberEntity createMember(
-        MemberCommand.ValidatedRegister validatedRegisterCommand
+        MemberRequestCommand registerCommand
     ) {
-        Member beforeSaveMemberEntity = new Member(validatedRegisterCommand);
+        Member beforeSaveMemberEntity = new Member(registerCommand);
         Member savedMember = memberReadWrite.saveMember(beforeSaveMemberEntity);
         return toMemberEntityCommand(savedMember);
     }
@@ -150,17 +150,6 @@ public class MemberService {
     /**
     * CONSTRUCTOR & METHODS
     * */
-    public MemberCommand.ValidatedRegister toValidatedRegisterCommand(
-        MemberCommand.Register registerCommand,
-        String parsedEmail
-    ) {
-        return new MemberCommand.ValidatedRegister(
-            registerCommand.name(),
-            parsedEmail,
-            registerCommand.address()
-        );
-    }
-
     public MemberCommand.MemberEntity toMemberEntityCommand(
         Member member
     ) {
