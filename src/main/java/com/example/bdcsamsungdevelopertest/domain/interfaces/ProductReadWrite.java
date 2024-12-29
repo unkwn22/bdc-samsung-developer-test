@@ -16,6 +16,8 @@ public interface ProductReadWrite {
 
     List<Product> findAllProducts();
 
+    List<Product> findAllProducts(List<Long> ids);
+
 
     /**
      * WRITE
