@@ -35,17 +35,17 @@ public class OrderItem extends BaseTime {
      * RELATIONS
      * */
     @ManyToOne(
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         targetEntity = Orders.class
     )
     @JoinColumn(name = "orders_id", nullable = false)
     protected Orders orders;
 
     @ManyToOne(
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         targetEntity = Product.class
     )
-    @JoinColumn(name = "product", nullable = false)
+    @JoinColumn(name = "product_id", nullable = false)
     protected Product product;
 
     /**

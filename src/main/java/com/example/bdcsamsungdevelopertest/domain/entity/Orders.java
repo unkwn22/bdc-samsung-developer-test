@@ -12,12 +12,10 @@ public class Orders extends BaseTime {
     public Orders() {}
 
     public Orders(
-        String name,
         Member member,
         Long totalAmount,
         String address
     ) {
-        this.name = name;
         this.member = member;
         this.totalAmount = totalAmount;
         this.address = address;
@@ -27,9 +25,6 @@ public class Orders extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @Column(name = "name", nullable = false)
-    protected String name;
 
     @Column(name = "orderDate", nullable = false, updatable = false)
     protected LocalDateTime orderDate = LocalDateTime.now();
@@ -48,7 +43,7 @@ public class Orders extends BaseTime {
      * RELATIONS
      * */
     @ManyToOne(
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         targetEntity = Member.class
     )
     @JoinColumn(name = "member_id", nullable = false)
@@ -56,7 +51,7 @@ public class Orders extends BaseTime {
 
     @OneToMany(
         mappedBy = "orders",
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         targetEntity = OrderItem.class,
         cascade = CascadeType.ALL,
         orphanRemoval = true
@@ -68,10 +63,6 @@ public class Orders extends BaseTime {
      * */
     public Long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public LocalDateTime getOrderDate() {
@@ -101,10 +92,6 @@ public class Orders extends BaseTime {
     /**
      * SETTERS
      * */
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setTotalAmount(Long totalAmount) {
         this.totalAmount = totalAmount;
     }
@@ -133,7 +120,6 @@ public class Orders extends BaseTime {
     public String toString() {
         return "Orders{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", orderDate=" + orderDate +
                 ", totalAmount=" + totalAmount +
                 ", address='" + address + '\'' +

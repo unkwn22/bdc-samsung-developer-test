@@ -117,25 +117,16 @@ public class ProductService {
         return searchedProductObject.get();
     }
 
-    public Map<Long, ProductEntityCommand> searchProductsAndValidateEachThenReturnEntityCommand(
-            List<Long> productIds
+    /**
+    * 요청한 상품 id 유효성 검사 및 검색된 상품 commandMap으로 반환
+    * */
+    public Map<Long, ProductEntityCommand> searchProductsAndValidateThenReturnMap(
+        List<Long> productIds
     ) {
-        List<Product> searchedProducts = searchProducts(productIds);                                        // [1] 요청된 OrderItemRequestCommand의 상품 id들로 상품 목록 조회
-        if(searchedProducts.isEmpty()) throw new BadRequestException("없는 상품들입니다.");                    // [2] 조회 된 상품 목록이 비어있을 경우 400 예외
-        Map<Long, ProductEntityCommand> productEntityCommandMap                                             // [3] 반환 될 product entity command의 Map [productId, productEntityCommand]
-                = toProductEntitiesCommandMap(searchedProducts);
-        HashMap<Long, Boolean> alreadyCheckedIdMap = new HashMap<>();                                       // [4] (중복 확인을 위한 Map) 현 메소드의 파라미터인 productIds는 중복 확인이 되어있지 않음으로
-        for(Long iterateProductId : productIds) {                                                           // [5] 메소드 파라미터 productIds 만큼 루프
-            boolean alreadyCheckedId = alreadyCheckedIdMap.containsKey(iterateProductId);                   // [5-1] 중복 확인 Map에 iterate productId가 존재한다면 skip
-            if (alreadyCheckedId) continue;
-            else alreadyCheckedIdMap.put(iterateProductId, true);                                           // [5-2] 중복 확인 Map에 존재 하지 않으면 등록
-            if (!productEntityCommandMap.containsKey(iterateProductId)) {                                   // [5-3] 유효한 상품 정보 Map에 iterate productId가 존재하지 않는다면
-                throw new BadRequestException("요청한 상품 중 없는 상품이 존재합니다.");                          // 유효산 상품 조회를 요청한것으로 400 예외
-            }
-        }
-        return productEntityCommandMap;                                                                     // [6] 이미 조회 목적으로 변환 된 productEntityCommandMap 반환
+        List<Product> searchedProducts = searchProducts(productIds);                     // [1] 요청된 OrderItemRequestCommand의 상품 id들로 상품 목록 조회
+        if(searchedProducts.isEmpty()) throw new BadRequestException("없는 상품들입니다."); // [2] 조회 된 상품 목록이 비어있을 경우 400 예외
+        return toProductEntitiesCommandMap(searchedProducts);                            // [3] 조회 된 상품 목록 Map으로 변환 [productId, productEntityCommand]
     }
-
 
     /**
      * CONSTRUCTOR & METHODS
@@ -215,7 +206,7 @@ public class ProductService {
     }
 
     public Map<Long, ProductEntityCommand> toProductEntitiesCommandMap(
-            List<Product> products
+        List<Product> products
     ) {
         return products.stream()
                 .collect(
