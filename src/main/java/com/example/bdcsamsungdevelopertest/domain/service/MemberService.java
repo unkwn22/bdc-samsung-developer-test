@@ -89,6 +89,13 @@ public class MemberService {
         memberReadWrite.deleteMember(member);
     }
 
+    @Transactional(readOnly = true)
+    public MemberCommand.MemberEntity searchMember(Long id) {
+        Optional<Member> searchedMemberObject = memberReadWrite.findSpecificMember(id);
+        Member member = memberGetOrThrow(searchedMemberObject);
+        return toMemberEntityCommand(member);
+    }
+
     /**
     * VALIDATION
     * */
