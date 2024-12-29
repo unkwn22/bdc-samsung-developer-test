@@ -127,8 +127,8 @@ public class MemberService {
      * @samsung 이메일 형식 유효성 검사
      * */
     public String validateEmailPatternAndReturnParsedEmail(String email) {
-        boolean patternValidation = Pattern.matches(EMAIL_PATTERN_REGEX, email);
-        if(!patternValidation) throw new BadRequestException("이메일 형식이 맞지 않습니다.");
+        boolean patternMatch = Pattern.matches(EMAIL_PATTERN_REGEX, email);
+        if(!patternMatch) throw new BadRequestException("이메일 형식이 맞지 않습니다.");
         return parseEmail(email);
     }
 
