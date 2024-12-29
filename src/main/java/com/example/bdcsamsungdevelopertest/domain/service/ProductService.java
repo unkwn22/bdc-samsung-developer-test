@@ -13,9 +13,8 @@ import com.example.bdcsamsungdevelopertest.domain.interfaces.ProductReadWrite;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.bdcsamsungdevelopertest.common.util.StringUtilExtension.validateIfBothContentMatches;
 
@@ -83,6 +82,11 @@ public class ProductService {
         return toProductEntitiesCommand(searchedProducts);
     }
 
+    @Transactional(readOnly = true)
+    public List<Product> searchProducts(List<Long> ids) {
+        return productReadWrite.findAllProducts(ids);
+    }
+
     /**
      * VALIDATION
      * */
@@ -111,6 +115,32 @@ public class ProductService {
     public Product productGetOrThrow(Optional<Product> searchedProductObject) {
         if(searchedProductObject.isEmpty()) throw new NotFoundException("존재하지 않는 상품 정보입니다.");
         return searchedProductObject.get();
+    }
+
+    public List<ProductEntityCommand> searchProductsAndValidateEachThenReturnEntityCommand(
+            List<Long> productIds
+    ) {
+        List<Product> searchedProducts = searchProducts(productIds);                                        // [1] 요청된 OrderItemRequestCommand의 상품 id들로 상품 목록 조회
+        if(searchedProducts.isEmpty()) throw new BadRequestException("요청한 상품 중 없는 상품이 존재합니다.");   // [2] 조회 된 상품 목록이 비어있을 경우 400 예외
+        Map<Long, Boolean> searchedProductIdsMap = searchedProducts.stream()                                // [3] 유효한 상품 정보를 O(1) timeComplexity 검색을 활용하기 위함
+                .map(Product::getId)
+                .collect(
+                    Collectors.toMap(                                                                       // [3-1] [productId, true]
+                        id -> id,
+                        id -> true
+                    )
+                );
+        HashMap<Long, Boolean> alreadyCheckedIdMap = new HashMap<>();                                       // [4] (중복 확인을 위한 Map) 현 메소드의 파라미터인 productIds는 중복 확인이 되어있지 않음으로
+        for(int i = 0; i < productIds.size(); i++) {                                                        // [5] 메소드 파라미터 productIds 만큼 루프
+            Long iterateProductId = productIds.get(i);                                                      // [5-1] iterate 되고 있는 productId inline 변수 초기화
+            boolean alreadyCheckedId = alreadyCheckedIdMap.containsKey(iterateProductId);                   // [5-2] 중복 확인 Map에 iterate productId가 존재한다면 skip
+            if(alreadyCheckedId) continue;
+            else alreadyCheckedIdMap.put(iterateProductId, true);                                           // [5-3] 중복 확인 Map에 존재 하지 않으면 등록
+            if(!searchedProductIdsMap.containsKey(iterateProductId)) {                                      // [5-4] 유효한 상품 정보 Map에 iterate productId가 존재하지 않는다면
+                throw new BadRequestException("요청한 상품 중 없는 상품이 존재합니다.");                          // 유효산 상품 조회를 요청한것으로 400 예외
+            }
+        }
+        return toProductEntitiesCommand(searchedProducts);                                                  // [6] 메소드 파라미터 productIds 검증완료로 command 객체로 변환 후 반환
     }
 
     /**
