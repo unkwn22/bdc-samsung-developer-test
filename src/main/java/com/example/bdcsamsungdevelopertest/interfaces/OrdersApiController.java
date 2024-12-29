@@ -8,10 +8,7 @@ import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
 import com.example.bdcsamsungdevelopertest.interfaces.dto.OrdersRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,6 +52,22 @@ public class OrdersApiController {
         );
         OrdersInfo.OrdersEntity info = ordersFacade.requestOrdersRegistration(command);
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(info);
+    }
+
+    /**
+     * 특정 주문 정보 조회
+     *
+     * 200 OK: response: { userId, orderItems:[], address, totalPrice }
+     * 404 not found, response:
+     * */
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrdersInfo.OrdersEntity> searchOrders(
+        @PathVariable("orderId") Long id
+    ) {
+        OrdersRequestCommand command = new OrdersRequestCommand(id);
+        OrdersInfo.OrdersEntity info = ordersFacade.requestOrdersSearch(command);
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }
 

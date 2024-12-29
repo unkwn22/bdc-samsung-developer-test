@@ -58,4 +58,20 @@ public class OrdersFacade {
         OrdersCommand.OrdersEntity ordersEntityCommand = ordersService.createOrdersWithRelations(finalRegisterCommand);
         return ordersService.toOrdersInfo(ordersEntityCommand);
     }
+
+    /**
+     * 주문 조회 퍼사드
+     *
+     * DESC: 특정 주문을 조회 하기 위한 집합 메소드
+     *
+     * ORDER:
+     * 1. 주문 조회 후 entity command로 변환
+     * 2. command entity로 info 반환
+     * */
+    public OrdersInfo.OrdersEntity requestOrdersSearch(
+        OrdersRequestCommand searchCommand
+    ) {
+        OrdersCommand.OrdersEntity ordersEntityCommand = ordersService.searchOrders(searchCommand.getId());
+        return ordersService.toOrdersInfo(ordersEntityCommand);
+    }
 }

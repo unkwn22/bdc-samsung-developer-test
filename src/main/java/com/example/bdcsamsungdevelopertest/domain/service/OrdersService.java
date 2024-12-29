@@ -1,6 +1,7 @@
 package com.example.bdcsamsungdevelopertest.domain.service;
 
 import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
+import com.example.bdcsamsungdevelopertest.common.exception.NotFoundException;
 import com.example.bdcsamsungdevelopertest.domain.command.*;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
 import com.example.bdcsamsungdevelopertest.domain.entity.Orders;
@@ -64,6 +65,13 @@ public class OrdersService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public OrdersCommand.OrdersEntity searchOrders(Long id) {
+        Optional<Orders> searchedOrdersObject = ordersReadWrite.findSpecificOrders(id);
+        Orders orders = ordersGetOrThrow(searchedOrdersObject);
+        return toOrdersEntityCommand(orders);
+    }
+
     /**
      * VALIDATION
      * */
@@ -122,6 +130,14 @@ public class OrdersService {
         );
 
         return registerCommand;                                                                                         // [16] [0-1] 반환 재사용
+    }
+
+    /**
+     * Optional orders 객체 유효검사
+     * */
+    public Orders ordersGetOrThrow(Optional<Orders> searchedOrdersObject) {
+        if(searchedOrdersObject.isEmpty()) throw new NotFoundException("존재하지 않는 주문 정보입니다.");
+        return searchedOrdersObject.get();
     }
 
     /**

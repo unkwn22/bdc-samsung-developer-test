@@ -5,6 +5,8 @@ import com.example.bdcsamsungdevelopertest.domain.interfaces.OrdersReadWrite;
 import com.example.bdcsamsungdevelopertest.infrastructure.jpa.OrdersRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public class OrdersReadWriteImpl implements OrdersReadWrite {
 
@@ -14,6 +16,11 @@ public class OrdersReadWriteImpl implements OrdersReadWrite {
         OrdersRepository ordersRepository
     ) {
         this.ordersRepository = ordersRepository;
+    }
+
+    @Override
+    public Optional<Orders> findSpecificOrders(Long id) {
+        return ordersRepository.findById(id);
     }
 
     @Override
