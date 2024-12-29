@@ -74,4 +74,16 @@ public class OrdersFacade {
         OrdersCommand.OrdersEntity ordersEntityCommand = ordersService.searchOrders(searchCommand.getId());
         return ordersService.toOrdersInfo(ordersEntityCommand);
     }
+
+    /**
+     * 주문 취소 요청 퍼사드
+     *
+     * DESC: 특정 주문을 조회 하기 위한 집합 메소드
+     *
+     * ORDER:
+     * 1. 주문 취소 요청
+     * */
+    public void requestOrdersCancel(OrdersRequestCommand searchCommand) {
+        ordersService.cancelOrders(searchCommand.getId());
+    }
 }

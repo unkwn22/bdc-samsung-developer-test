@@ -72,6 +72,13 @@ public class OrdersService {
         return toOrdersEntityCommand(orders);
     }
 
+    @Transactional
+    public void cancelOrders(Long id) {
+        Optional<Orders> searchedOrdersObject = ordersReadWrite.findSpecificOrders(id);
+        Orders orders = ordersGetOrThrow(searchedOrdersObject);
+        orders.cancelOrder();
+    }
+
     /**
      * VALIDATION
      * */

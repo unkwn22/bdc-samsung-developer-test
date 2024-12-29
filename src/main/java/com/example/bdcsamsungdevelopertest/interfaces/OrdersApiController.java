@@ -2,6 +2,7 @@ package com.example.bdcsamsungdevelopertest.interfaces;
 
 import com.example.bdcsamsungdevelopertest.application.OrdersFacade;
 import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
+import com.example.bdcsamsungdevelopertest.common.response.CommonResponse;
 import com.example.bdcsamsungdevelopertest.domain.command.OrderItemRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.OrdersRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
@@ -70,6 +71,24 @@ public class OrdersApiController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }
+
+    /**
+     * 특정 주문 취소
+     *
+     * 200 OK: response: { 성공 메세지 }
+     * 400 bad, response: 이미 취소
+     * 404 not found, response: 요청 주문이 없음
+     * */
+    @PutMapping("/{orderId}")
+    public ResponseEntity<CommonResponse> cancelOrders(
+        @PathVariable("orderId") Long id
+    ) {
+        OrdersRequestCommand command = new OrdersRequestCommand(id);
+        ordersFacade.requestOrdersCancel(command);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new CommonResponse("취소 성공"));
+    }
+
 
     private List<OrderItemRequestCommand> toOrderItemsCommand(
         List<OrdersRequestDto.OrderItem> orderItemDtoList
