@@ -52,6 +52,11 @@ public class MemberReadWriteImpl implements MemberReadWrite {
     }
 
     @Override
+    public Optional<Member> findSpecificMember(Long id) {
+        return memberRepository.findById(id);
+    }
+
+    @Override
     public Member saveMember(Member member) {
         return memberRepository.save(member);
     }
