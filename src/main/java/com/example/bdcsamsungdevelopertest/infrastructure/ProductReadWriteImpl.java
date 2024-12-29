@@ -35,6 +35,11 @@ public class ProductReadWriteImpl implements ProductReadWrite {
     }
 
     @Override
+    public List<Product> findAllProducts(List<Long> ids) {
+        return productRepository.findAllById(ids);
+    }
+
+    @Override
     public Product saveProduct(Product product) {
         return productRepository.save(product);
     }
