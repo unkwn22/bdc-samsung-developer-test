@@ -12,12 +12,10 @@ public class Orders extends BaseTime {
     public Orders() {}
 
     public Orders(
-        String name,
         Member member,
         Long totalAmount,
         String address
     ) {
-        this.name = name;
         this.member = member;
         this.totalAmount = totalAmount;
         this.address = address;
@@ -27,9 +25,6 @@ public class Orders extends BaseTime {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
-
-    @Column(name = "name", nullable = false)
-    protected String name;
 
     @Column(name = "orderDate", nullable = false, updatable = false)
     protected LocalDateTime orderDate = LocalDateTime.now();
@@ -70,10 +65,6 @@ public class Orders extends BaseTime {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public LocalDateTime getOrderDate() {
         return orderDate;
     }
@@ -101,10 +92,6 @@ public class Orders extends BaseTime {
     /**
      * SETTERS
      * */
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void setTotalAmount(Long totalAmount) {
         this.totalAmount = totalAmount;
     }
@@ -133,7 +120,6 @@ public class Orders extends BaseTime {
     public String toString() {
         return "Orders{" +
                 "id=" + id +
-                ", name='" + name + '\'' +
                 ", orderDate=" + orderDate +
                 ", totalAmount=" + totalAmount +
                 ", address='" + address + '\'' +
