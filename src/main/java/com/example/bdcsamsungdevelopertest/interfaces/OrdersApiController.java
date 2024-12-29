@@ -3,7 +3,9 @@ package com.example.bdcsamsungdevelopertest.interfaces;
 import com.example.bdcsamsungdevelopertest.application.OrdersFacade;
 import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import com.example.bdcsamsungdevelopertest.common.response.CommonResponse;
+import com.example.bdcsamsungdevelopertest.common.util.PageableExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.OrderItemRequestCommand;
+import com.example.bdcsamsungdevelopertest.domain.command.OrdersCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.OrdersRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
 import com.example.bdcsamsungdevelopertest.interfaces.dto.OrdersRequestDto;
@@ -87,6 +89,30 @@ public class OrdersApiController {
         ordersFacade.requestOrdersCancel(command);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new CommonResponse("취소 성공"));
+    }
+
+    /**
+     * 특정 사용자 주문목록 조회
+     *
+     * ※ 반환 정보 중 주문 번호 (ordersId) 가 없음으로 사용자의 상품 목록 리스트 조회
+     *
+     * 200 OK: response: [{ userId, orderItems:[], address, totalPrice }]
+     * 404 not found, response: 사용자가 없음
+     * */
+    @GetMapping("/search")
+    public ResponseEntity<List<OrdersInfo.OrdersEntity>>
+    searchOrdersList(
+        @RequestParam(value = "userId", required = true) Long userId,
+        @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+        @RequestParam(value = "size", required = false, defaultValue = "10") Integer size
+    ) {
+        OrdersCommand.SearchList command = new OrdersCommand.SearchList(
+            userId,
+            PageableExtension.toPageable(page, size, "desc")
+        );
+        List<OrdersInfo.OrdersEntity> infos = ordersFacade.requestOrdersListSearch(command);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(infos);
     }
 
 

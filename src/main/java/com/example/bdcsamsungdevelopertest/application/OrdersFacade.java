@@ -86,4 +86,20 @@ public class OrdersFacade {
     public void requestOrdersCancel(OrdersRequestCommand searchCommand) {
         ordersService.cancelOrders(searchCommand.getId());
     }
+
+    /**
+     * 사용자 기준 전체 주문 조회 퍼사드
+     *
+     * DESC: pagination 요청으로 주문 리스트 반환
+     *
+     * ORDER:
+     * 1. 사용자 유효성 검사
+     * 2. pageable 객체로 유저 리스트 조회 및 info 리스트로 변환 후 반환
+     * */
+    public List<OrdersInfo.OrdersEntity> requestOrdersListSearch(
+        OrdersCommand.SearchList searchListCommand
+    ) {
+        memberService.searchMember(searchListCommand.userId());
+        return ordersService.searchOrders(searchListCommand);
+    }
 }

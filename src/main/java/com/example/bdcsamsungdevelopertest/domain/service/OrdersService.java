@@ -5,9 +5,13 @@ import com.example.bdcsamsungdevelopertest.common.exception.NotFoundException;
 import com.example.bdcsamsungdevelopertest.domain.command.*;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
 import com.example.bdcsamsungdevelopertest.domain.entity.Orders;
+import com.example.bdcsamsungdevelopertest.domain.info.OrderItemInfo;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.MemberReadWrite;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.OrdersReadWrite;
+import com.example.bdcsamsungdevelopertest.domain.query.OrdersQueryEnum;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,6 +81,17 @@ public class OrdersService {
         Optional<Orders> searchedOrdersObject = ordersReadWrite.findSpecificOrders(id);
         Orders orders = ordersGetOrThrow(searchedOrdersObject);
         orders.cancelOrder();
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrdersInfo.OrdersEntity> searchOrders(
+        OrdersCommand.SearchList searchListCommand
+    ) {
+        List<Tuple> tupleResult = ordersReadWrite.customFindOrders(
+                searchListCommand.userId(),
+                searchListCommand.pageable()
+        );
+        return toOrdersInfos(tupleResult);
     }
 
     /**
@@ -174,6 +189,45 @@ public class OrdersService {
             ordersEntityCommand.ordersItemsEntityCommand().stream()
                     .map(orderItemService::toOrdersItemInfo)
                     .collect(Collectors.toList())
+        );
+    }
+
+    public List<OrdersInfo.OrdersEntity> toOrdersInfos(
+        List<Tuple> tupleResult
+    ) {
+        List<OrdersInfo.OrdersEntity> ordersInfos = new ArrayList<>();
+
+        Map<Object, List<Tuple>> groupedByOrdersId = tupleResult.stream()
+                .collect(Collectors.groupingBy( tuple ->
+                        tuple.get(Expressions.numberPath(Long.class, OrdersQueryEnum.ORDERS_ID.name())))
+                );
+
+        for(Map.Entry<Object, List<Tuple>> entry : groupedByOrdersId.entrySet()) {
+            List<Tuple> orderItemList = entry.getValue();
+            Tuple firstTuple = orderItemList.getFirst();
+
+            List<OrderItemInfo.OrdersEntity> orderItemInfos = new ArrayList<>();
+            for(Tuple tuple : orderItemList) {
+                orderItemInfos.add(orderItemService.tupleToOrdersItemInfo(tuple));
+            }
+            ordersInfos.add(tupleToOrdersInfo(firstTuple, orderItemInfos));
+        }
+
+        return ordersInfos;
+    }
+
+    public OrdersInfo.OrdersEntity tupleToOrdersInfo(
+        Tuple tuple,
+        List<OrderItemInfo.OrdersEntity> orderItemInfos
+    ) {
+        Long userId = tuple.get(Expressions.numberPath(Long.class, OrdersQueryEnum.USER_ID.name()));
+        String address = tuple.get(Expressions.stringPath(OrdersQueryEnum.ADDRESS.name()));
+        Long totalAmount = tuple.get(Expressions.numberPath(Long.class, OrdersQueryEnum.TOTAL_AMOUNT.name()));
+        return new OrdersInfo.OrdersEntity(
+            userId,
+            address,
+            totalAmount,
+            orderItemInfos
         );
     }
 }

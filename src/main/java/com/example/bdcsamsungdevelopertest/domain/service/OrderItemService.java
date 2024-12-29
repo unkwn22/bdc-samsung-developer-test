@@ -9,6 +9,9 @@ import com.example.bdcsamsungdevelopertest.domain.entity.Product;
 import com.example.bdcsamsungdevelopertest.domain.info.OrderItemInfo;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.OrderItemReadWrite;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.ProductReadWrite;
+import com.example.bdcsamsungdevelopertest.domain.query.OrdersQueryEnum;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.Expressions;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -93,6 +96,17 @@ public class OrderItemService {
         return new OrderItemInfo.OrdersEntity(
             orderItemEntityCommand.productId(),
             orderItemEntityCommand.quantity()
+        );
+    }
+
+    public OrderItemInfo.OrdersEntity tupleToOrdersItemInfo(
+        Tuple tuple
+    ) {
+        Long productId = tuple.get(Expressions.numberPath(Long.class, OrdersQueryEnum.PRODUCT_ID.name()));
+        Integer quantity = tuple.get(Expressions.numberPath(Integer.class, OrdersQueryEnum.QUANTITY.name()));
+        return new OrderItemInfo.OrdersEntity(
+            productId,
+            quantity
         );
     }
 }
