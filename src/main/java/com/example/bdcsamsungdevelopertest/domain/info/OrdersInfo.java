@@ -9,13 +9,13 @@ public class OrdersInfo {
         Long userId,
         String address,
         Long totalPrice,
-        List<OrderItemInfo.OrdersEntity> oderItems
+        List<OrderItemInfo.OrdersEntity> orderItems
     ) {
         public OrdersEntity {
             Objects.requireNonNull(userId);
             Objects.requireNonNull(address);
             Objects.requireNonNull(totalPrice);
-            Objects.requireNonNull(oderItems);
+            Objects.requireNonNull(orderItems);
         }
     }
 }
