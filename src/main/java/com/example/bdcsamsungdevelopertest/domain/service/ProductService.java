@@ -13,6 +13,8 @@ import com.example.bdcsamsungdevelopertest.domain.interfaces.ProductReadWrite;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static com.example.bdcsamsungdevelopertest.common.util.StringUtilExtension.validateIfBothContentMatches;
@@ -73,6 +75,12 @@ public class ProductService {
             if(productNameExist) throw new BadRequestException("수정 요청하신 상품명이 이미 존재합니다.");
         }
         product.updateProductWithDiscountPriceValidation(updateCommand);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProductEntityCommand> searchProducts() {
+        List<Product> searchedProducts = productReadWrite.findAllProducts();
+        return toProductEntitiesCommand(searchedProducts);
     }
 
     /**
@@ -160,5 +168,25 @@ public class ProductService {
             info.setDiscountInfo(discountInfo);
         }
         return info;
+    }
+
+    public List<ProductEntityCommand> toProductEntitiesCommand(
+        List<Product> products
+    ) {
+        List<ProductEntityCommand> command = new ArrayList<>();
+        products.forEach( iterateProduct ->
+            command.add(toProductEntityCommand(iterateProduct))
+        );
+        return command;
+    }
+
+    public List<ProductInfo> toProductInfos(
+        List<ProductEntityCommand> productEntitiesCommand
+    ) {
+        List<ProductInfo> infos = new ArrayList<>();
+        productEntitiesCommand.forEach( iterateProductCommand ->
+            infos.add(toProductInfo(iterateProductCommand))
+        );
+        return infos;
     }
 }

@@ -176,6 +176,7 @@ public class MemberService {
         List<Member> members
     ) {
         List<MemberCommand.MemberEntity> command = new ArrayList<>();
+        // TODO reafactor into existing toMemberEntityCommand
         members.forEach( iterateMember ->
             command.add(
                 new MemberCommand.MemberEntity(
@@ -193,6 +194,7 @@ public class MemberService {
         List<MemberCommand.MemberEntity> memberEntitiesCommand
     ) {
         List<MemberInfo.MemberEntity> infos = new ArrayList<>();
+        // TODO reafactor into existing toMemberInfo
         memberEntitiesCommand.forEach( iterateMemberCommand ->
             infos.add(
                 new MemberInfo.MemberEntity(

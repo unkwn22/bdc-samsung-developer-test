@@ -6,6 +6,8 @@ import com.example.bdcsamsungdevelopertest.domain.info.ProductInfo;
 import com.example.bdcsamsungdevelopertest.domain.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ProductFacade {
 
@@ -71,5 +73,19 @@ public class ProductFacade {
         productService.findProductAndValidateNameThenUpdate(updateCommand);
         ProductEntityCommand productEntityCommand = productService.searchProduct(updateCommand.getId());
         return productService.toProductInfo(productEntityCommand);
+    }
+
+    /**
+     * 전체 상품 조회 퍼사드
+     *
+     * DESC: pagination 없는 전체 상품 조회
+     *
+     * ORDER:
+     * 1. 전체 상품 리스트 조회 후 command로 변환
+     * 2. 전체 상품 리스트 command를 info 리스트로 변환 후 반환
+     * */
+    public List<ProductInfo> requestSearchProducts() {
+        List<ProductEntityCommand> productEntitiesCommand = productService.searchProducts();
+        return productService.toProductInfos(productEntitiesCommand);
     }
 }

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/product/api/v1")
 public class ProductApiController {
@@ -87,5 +89,20 @@ public class ProductApiController {
         ProductInfo info = productFacade.requestProductUpdate(command);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
+    }
+
+    /**
+     * 모든 상품 조회
+     *
+     * ※ pageable 명세가 없음
+     * 404 명세가 없음으로 조회할 목록이 없더라도 빈 리스트 반환으로 인지
+     *
+     * 200 ok: response: [ {상품 정보, {해당 상품 정보 (discount 포함)}} ]
+     * */
+    @GetMapping("/products")
+    public ResponseEntity<List<ProductInfo>> searchProducts() {
+        List<ProductInfo> infos = productFacade.requestSearchProducts();
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(infos);
     }
 }
