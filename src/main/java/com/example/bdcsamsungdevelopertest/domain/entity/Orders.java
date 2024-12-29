@@ -43,7 +43,7 @@ public class Orders extends BaseTime {
      * RELATIONS
      * */
     @ManyToOne(
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         targetEntity = Member.class
     )
     @JoinColumn(name = "member_id", nullable = false)
@@ -51,7 +51,7 @@ public class Orders extends BaseTime {
 
     @OneToMany(
         mappedBy = "orders",
-        fetch = FetchType.LAZY,
+        fetch = FetchType.EAGER,
         targetEntity = OrderItem.class,
         cascade = CascadeType.ALL,
         orphanRemoval = true
