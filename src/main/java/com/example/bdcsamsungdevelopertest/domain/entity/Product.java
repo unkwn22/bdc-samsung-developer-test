@@ -1,8 +1,13 @@
 package com.example.bdcsamsungdevelopertest.domain.entity;
 
+import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
+import com.example.bdcsamsungdevelopertest.domain.command.ProductRequestCommand;
 import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Optional;
+
+import static com.example.bdcsamsungdevelopertest.common.util.MathUtilExtension.requestIsBiggerThanTarget;
 
 @Entity
 @Table(name = "product")
@@ -26,6 +31,40 @@ public class Product extends BaseTime {
         this.name = name;
         this.price = price;
         this.discount = discount;
+    }
+
+    public Product(
+        ProductRequestCommand registerCommand
+    ) {
+        this.name = registerCommand.getName();
+        this.price = registerCommand.getPrice();
+    }
+
+    /**
+     * 상품 정보 수정
+     *
+     * DESC: 관계 데이터와의 정보 유효성 검사, 동적 수정
+     *
+     * ORDER:
+     * 1. 이름 수정
+     * 2. 할인 객체 null 확인
+     *  2-1. 할인 객체가 없으면 수정 요청 금액 적용
+     *  2-2. 할인 객체가 존재한다면
+     *   2-2-1. 수정 요청한 금액이 기존 할인 금액보다 크면 수정
+     *   2-2-2. 수정 요청한 금액이 기존 할인 금액보다 작으면 예외
+     * */
+    public void updateProductWithDiscountPriceValidation(
+        ProductRequestCommand updateCommand
+    ){
+        this.name = updateCommand.getName();
+        Optional<Discount> discountObject = Optional.ofNullable(this.discount);
+        if(discountObject.isEmpty()) {
+            this.price = updateCommand.getPrice();
+        } else {
+            Discount discount = discountObject.get();
+            if(requestIsBiggerThanTarget(updateCommand.getPrice(), discount.discountValue)) this.price = updateCommand.getPrice();
+            else throw new BadRequestException("수정 요청하신 상품 금액이 할인 금액보다 작습니다.");
+        }
     }
 
     @Id

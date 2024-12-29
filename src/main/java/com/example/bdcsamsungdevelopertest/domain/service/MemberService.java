@@ -135,6 +135,7 @@ public class MemberService {
     /**
     * 이메일 중복 확인
     * */
+    // TODO change to private
     public void validateDuplicateEmail(boolean emailDupValidation) {
         if(emailDupValidation) throw new BadRequestException("이미 존재하는 이메일 입니다.");
     }
@@ -175,6 +176,7 @@ public class MemberService {
         List<Member> members
     ) {
         List<MemberCommand.MemberEntity> command = new ArrayList<>();
+        // TODO reafactor into existing toMemberEntityCommand
         members.forEach( iterateMember ->
             command.add(
                 new MemberCommand.MemberEntity(
@@ -192,6 +194,7 @@ public class MemberService {
         List<MemberCommand.MemberEntity> memberEntitiesCommand
     ) {
         List<MemberInfo.MemberEntity> infos = new ArrayList<>();
+        // TODO reafactor into existing toMemberInfo
         memberEntitiesCommand.forEach( iterateMemberCommand ->
             infos.add(
                 new MemberInfo.MemberEntity(
