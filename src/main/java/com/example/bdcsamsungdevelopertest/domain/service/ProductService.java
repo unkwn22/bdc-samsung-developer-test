@@ -117,31 +117,25 @@ public class ProductService {
         return searchedProductObject.get();
     }
 
-    public List<ProductEntityCommand> searchProductsAndValidateEachThenReturnEntityCommand(
+    public Map<Long, ProductEntityCommand> searchProductsAndValidateEachThenReturnEntityCommand(
             List<Long> productIds
     ) {
         List<Product> searchedProducts = searchProducts(productIds);                                        // [1] 요청된 OrderItemRequestCommand의 상품 id들로 상품 목록 조회
-        if(searchedProducts.isEmpty()) throw new BadRequestException("요청한 상품 중 없는 상품이 존재합니다.");   // [2] 조회 된 상품 목록이 비어있을 경우 400 예외
-        Map<Long, Boolean> searchedProductIdsMap = searchedProducts.stream()                                // [3] 유효한 상품 정보를 O(1) timeComplexity 검색을 활용하기 위함
-                .map(Product::getId)
-                .collect(
-                    Collectors.toMap(                                                                       // [3-1] [productId, true]
-                        id -> id,
-                        id -> true
-                    )
-                );
+        if(searchedProducts.isEmpty()) throw new BadRequestException("없는 상품들입니다.");                    // [2] 조회 된 상품 목록이 비어있을 경우 400 예외
+        Map<Long, ProductEntityCommand> productEntityCommandMap                                             // [3] 반환 될 product entity command의 Map [productId, productEntityCommand]
+                = toProductEntitiesCommandMap(searchedProducts);
         HashMap<Long, Boolean> alreadyCheckedIdMap = new HashMap<>();                                       // [4] (중복 확인을 위한 Map) 현 메소드의 파라미터인 productIds는 중복 확인이 되어있지 않음으로
-        for(int i = 0; i < productIds.size(); i++) {                                                        // [5] 메소드 파라미터 productIds 만큼 루프
-            Long iterateProductId = productIds.get(i);                                                      // [5-1] iterate 되고 있는 productId inline 변수 초기화
-            boolean alreadyCheckedId = alreadyCheckedIdMap.containsKey(iterateProductId);                   // [5-2] 중복 확인 Map에 iterate productId가 존재한다면 skip
-            if(alreadyCheckedId) continue;
-            else alreadyCheckedIdMap.put(iterateProductId, true);                                           // [5-3] 중복 확인 Map에 존재 하지 않으면 등록
-            if(!searchedProductIdsMap.containsKey(iterateProductId)) {                                      // [5-4] 유효한 상품 정보 Map에 iterate productId가 존재하지 않는다면
+        for(Long iterateProductId : productIds) {                                                           // [5] 메소드 파라미터 productIds 만큼 루프
+            boolean alreadyCheckedId = alreadyCheckedIdMap.containsKey(iterateProductId);                   // [5-1] 중복 확인 Map에 iterate productId가 존재한다면 skip
+            if (alreadyCheckedId) continue;
+            else alreadyCheckedIdMap.put(iterateProductId, true);                                           // [5-2] 중복 확인 Map에 존재 하지 않으면 등록
+            if (!productEntityCommandMap.containsKey(iterateProductId)) {                                   // [5-3] 유효한 상품 정보 Map에 iterate productId가 존재하지 않는다면
                 throw new BadRequestException("요청한 상품 중 없는 상품이 존재합니다.");                          // 유효산 상품 조회를 요청한것으로 400 예외
             }
         }
-        return toProductEntitiesCommand(searchedProducts);                                                  // [6] 메소드 파라미터 productIds 검증완료로 command 객체로 변환 후 반환
+        return productEntityCommandMap;                                                                     // [6] 이미 조회 목적으로 변환 된 productEntityCommandMap 반환
     }
+
 
     /**
      * CONSTRUCTOR & METHODS
@@ -218,5 +212,17 @@ public class ProductService {
             infos.add(toProductInfo(iterateProductCommand))
         );
         return infos;
+    }
+
+    public Map<Long, ProductEntityCommand> toProductEntitiesCommandMap(
+            List<Product> products
+    ) {
+        return products.stream()
+                .collect(
+                    Collectors.toMap(
+                        Product::getId,
+                        this::toProductEntityCommand
+                    )
+                );
     }
 }
