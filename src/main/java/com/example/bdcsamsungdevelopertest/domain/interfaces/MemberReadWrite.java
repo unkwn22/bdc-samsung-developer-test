@@ -24,6 +24,7 @@ public interface MemberReadWrite {
 
     Optional<Member> findSpecificMemberByEmail(String email);
 
+    Optional<Member> findSpecificMember(Long id);
     /**
     * WRITE
     * */
