@@ -12,6 +12,15 @@ public class ProductRequestCommand {
         this.price = price;
     }
     public ProductRequestCommand(Long id) { this.id = id; }
+    public ProductRequestCommand(
+        Long id,
+        String name,
+        Integer price
+    ) {
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
     public Long getId() { return id; }                  // for update uses only
     public void setId(Long id) { this.id = id; }
     public String getName() { return name; }

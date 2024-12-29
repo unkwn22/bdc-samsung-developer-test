@@ -52,4 +52,24 @@ public class ProductFacade {
         ProductEntityCommand productEntityCommand = productService.searchProduct(searchCommand.getId());
         return productService.toProductInfo(productEntityCommand);
     }
+
+    /**
+     * 특정 상품 수정 퍼사드
+     *
+     * DESC: 영속성 컨텍스트를 이용한 객체 update
+     *
+     * ORDER:
+     * 1. 요청한 수정 금액 유효성 검사
+     * 2. 요청한 수정 정보 동적 수정
+     * 3. 수정 대상 id로 command 조회
+     * 4. command에서 info로 변환 후 반환
+     * */
+    public ProductInfo requestProductUpdate(
+        ProductRequestCommand updateCommand
+    ) {
+        productService.validatePriceRange(updateCommand.getPrice());
+        productService.findProductAndValidateNameThenUpdate(updateCommand);
+        ProductEntityCommand productEntityCommand = productService.searchProduct(updateCommand.getId());
+        return productService.toProductInfo(productEntityCommand);
+    }
 }

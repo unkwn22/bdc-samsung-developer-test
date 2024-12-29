@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+import static com.example.bdcsamsungdevelopertest.common.util.StringUtilExtension.validateIfBothContentMatches;
+
 @Service
 public class ProductService {
 
@@ -48,6 +50,29 @@ public class ProductService {
         Optional<Product> searchedProductObject = productReadWrite.findSpecificProduct(id);
         Product product = productGetOrThrow(searchedProductObject);
         return toProductEntityCommand(product);
+    }
+
+    /**
+    * 정적으로 요청한 상품명 고유성 검사 및 금액과 할인 금액 비교 수정
+     *
+     * ORDER:
+     * 1. id로 수정 대상 상품 찾기
+     * 2. 조회된 상품 객체 null 확인
+     * 3. 수정 요청한 상품명과 기존 상품명의 변동 감지
+     *  3-1. 변동이 감지 되었을때 요청한 상품명이 변동 가능한지, 고유한지 확인
+    * */
+    @Transactional
+    public void findProductAndValidateNameThenUpdate(
+        ProductRequestCommand updateCommand
+    ) {
+        Optional<Product> searchedProductObject = productReadWrite.findSpecificProduct(updateCommand.getId());
+        Product product = productGetOrThrow(searchedProductObject);
+        boolean bothMatch = validateIfBothContentMatches(product.getName(), updateCommand.getName());
+        if(!bothMatch) {
+            boolean productNameExist = searchByName(updateCommand.getName());
+            if(productNameExist) throw new BadRequestException("수정 요청하신 상품명이 이미 존재합니다.");
+        }
+        product.updateProductWithDiscountPriceValidation(updateCommand);
     }
 
     /**
