@@ -2,7 +2,6 @@ package com.example.bdcsamsungdevelopertest.domain.service;
 
 import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import com.example.bdcsamsungdevelopertest.common.exception.NotFoundException;
-import com.example.bdcsamsungdevelopertest.common.util.ParseExtension;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
@@ -18,6 +17,7 @@ import java.util.regex.Pattern;
 
 import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.EMAIL_PATTERN_REGEX;
 import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.SAMSUNG_EMAIL;
+import static com.example.bdcsamsungdevelopertest.common.util.StringUtilExtension.subStringEmail;
 
 @Service
 public class MemberService {
@@ -208,6 +208,6 @@ public class MemberService {
      * 이메일 파싱
      * */
     private String parseEmail(String email) {
-        return ParseExtension.subStringEmail(email);
+        return subStringEmail(email);
     }
 }
