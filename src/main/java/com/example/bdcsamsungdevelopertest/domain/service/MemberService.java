@@ -176,16 +176,8 @@ public class MemberService {
         List<Member> members
     ) {
         List<MemberCommand.MemberEntity> command = new ArrayList<>();
-        // TODO reafactor into existing toMemberEntityCommand
         members.forEach( iterateMember ->
-            command.add(
-                new MemberCommand.MemberEntity(
-                    iterateMember.getId(),
-                    iterateMember.getName(),
-                    iterateMember.getEmail() + SAMSUNG_EMAIL,
-                    iterateMember.getAddress()
-                )
-            )
+            command.add(toMemberEntityCommand(iterateMember))
         );
         return command;
     }
@@ -194,15 +186,8 @@ public class MemberService {
         List<MemberCommand.MemberEntity> memberEntitiesCommand
     ) {
         List<MemberInfo.MemberEntity> infos = new ArrayList<>();
-        // TODO reafactor into existing toMemberInfo
         memberEntitiesCommand.forEach( iterateMemberCommand ->
-            infos.add(
-                new MemberInfo.MemberEntity(
-                    iterateMemberCommand.name(),
-                    iterateMemberCommand.email() + SAMSUNG_EMAIL,
-                    iterateMemberCommand.address()
-                )
-            )
+            infos.add(toMemberInfo(iterateMemberCommand))
         );
         return infos;
     }
