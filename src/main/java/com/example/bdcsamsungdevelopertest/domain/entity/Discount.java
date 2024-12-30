@@ -1,5 +1,6 @@
 package com.example.bdcsamsungdevelopertest.domain.entity;
 
+import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import jakarta.persistence.*;
 
 @Entity
@@ -51,6 +52,14 @@ public class Discount extends BaseTime {
 
     public enum DiscountType {
         AMOUNT,
+    }
+
+    /**
+     * SETTERS
+     * */
+    public void updateDiscountValue(Integer discountValue) {
+        if(discountValue < 1 || discountValue > 999) throw new BadRequestException("수정 할 수 없는 할인 금액입니다.");
+        this.discountValue = discountValue;
     }
 
     /**

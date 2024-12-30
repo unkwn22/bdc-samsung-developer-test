@@ -28,7 +28,7 @@ public class DiscountApiController {
      * */
     @PostMapping("/register")
     public ResponseEntity<DiscountInfo.DiscountEntity> registerDiscount(
-        @RequestBody DiscountRequestDto body
+        @RequestBody DiscountRequestDto.DiscountCreate body
     ) {
         DiscountRequestCommand command = new DiscountRequestCommand(
             body.productId(),
@@ -73,6 +73,27 @@ public class DiscountApiController {
         DiscountRequestCommand command = new DiscountRequestCommand();
         command.setId(discountId);
         DiscountInfo.DiscountEntity info = discountFacade.requestDiscountSearch(command);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(info);
+    }
+
+    /**
+     * 특정 할인 정보 수정
+     *
+     * PathVariable {discountId} (Long)
+     * 200 ok, response: { "productId": 1, "discountValue": 1000 }
+     * 400 bad, response:
+     * 404 notfound, response:
+     * */
+    @PutMapping("/{discountId}")
+    public ResponseEntity<DiscountInfo.DiscountEntity> updateDiscount(
+        @PathVariable("discountId") Long discountId,
+        @RequestBody DiscountRequestDto.DiscountUpdate body
+    ) {
+        DiscountRequestCommand command = new DiscountRequestCommand();
+        command.setDiscountValue(body.discountValue());
+        command.setId(discountId);
+        DiscountInfo.DiscountEntity info = discountFacade.requestDiscountUpdate(command);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }

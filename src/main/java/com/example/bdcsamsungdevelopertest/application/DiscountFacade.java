@@ -74,4 +74,19 @@ public class DiscountFacade {
         DiscountCommand.DiscountEntity discountEntityCommand = discountService.searchDiscount(searchCommand.getId());
         return discountService.toDiscountInfo(discountEntityCommand);
     }
+
+    /**
+     * 할인 정보 수정 퍼사드
+     *
+     * ORDER:
+     * 1. 할인 id로 할인 정보 조회 수정
+     * 2. 할인 금액과 상품 금액 비교 후 수정 command 변환 후 반환
+     * 3. info 변환 후 반환
+     * */
+    public DiscountInfo.DiscountEntity requestDiscountUpdate(
+        DiscountRequestCommand updateCommand
+    ) {
+        DiscountCommand.DiscountEntity discountEntityCommand = discountService.findDiscountAndValidatePriceThenUpdate(updateCommand);
+        return discountService.toDiscountInfo(discountEntityCommand);
+    }
 }

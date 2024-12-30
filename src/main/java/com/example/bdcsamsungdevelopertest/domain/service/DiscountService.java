@@ -61,10 +61,26 @@ public class DiscountService {
 
     @Transactional(readOnly = true)
     public DiscountCommand.DiscountEntity searchDiscount(Long id) {
-        Optional<Discount> searchedDiscountObject = discountReadWrite.findSpecificDiscount(id);
-        Discount discount = discountGetOrThrow(searchedDiscountObject);
+        Discount discount = commonDiscountSearch(id);
         Product product = discount.getProduct();
         return toDiscountEntityCommand(discount, product.getId());
+    }
+
+    @Transactional
+    public DiscountCommand.DiscountEntity findDiscountAndValidatePriceThenUpdate(
+        DiscountRequestCommand updateCommand
+    ) {
+        Discount discount = commonDiscountSearch(updateCommand.getId());
+        Product product = discount.getProduct();
+        validateProductPriceComparison(updateCommand.getDiscountValue(), product.getPrice());
+        discount.updateDiscountValue(updateCommand.getDiscountValue());
+        Discount savedDiscount = discountReadWrite.saveDiscount(discount);
+        return toDiscountEntityCommand(savedDiscount, product.getId());
+    }
+
+    private Discount commonDiscountSearch(Long id) {
+        Optional<Discount> searchedDiscountObject = discountReadWrite.findSpecificDiscount(id);
+        return discountGetOrThrow(searchedDiscountObject);
     }
 
     /**
@@ -80,7 +96,7 @@ public class DiscountService {
         Integer discountPrice,
         Integer productPrice
     ) {
-        if(requestIsBiggerThanTarget(discountPrice, productPrice)) throw new BadRequestException("요청하신 할인 금액이 상품 금액보다 급니다.");
+        if(requestIsBiggerThanTarget(discountPrice, productPrice)) throw new BadRequestException("요청하신 할인 금액이 상품 금액보다 큽니다.");
     }
 
     public void extractAndValidateIfDiscountInfoExists(ProductInfo productInfo) {
