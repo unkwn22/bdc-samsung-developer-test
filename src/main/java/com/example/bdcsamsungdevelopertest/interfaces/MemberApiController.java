@@ -6,6 +6,13 @@ import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
 import com.example.bdcsamsungdevelopertest.interfaces.dto.MemberRequestDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +22,7 @@ import java.util.List;
 // TODO controller dto mismatch bad request handler needed
 @RestController
 @RequestMapping("/member/api/v1")
+@Tag(name = "사용자 관련 API", description = "사용자 관련 API")
 public class MemberApiController {
 
     private final MemberFacade memberFacade;
@@ -30,6 +38,13 @@ public class MemberApiController {
      * 201 created, response: 생성된 사용자 정보 (JSON)
      * 400 bad, response: "유효성 검사 실패, 중복 이메일 등, 주소가 비어있는 경우, 주소가 너무 큰 경우)
      * */
+    @Operation(summary = "사용자 생성", description = "새로운 사용자를 생성")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Created",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = MemberRequestDto.class))),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping("/register")
     public ResponseEntity<MemberInfo.MemberEntity> registerMember(
         @RequestBody MemberRequestDto body
@@ -51,6 +66,13 @@ public class MemberApiController {
      * 200 ok, response: name, email, address
      * 404 not found, response:
      * */
+    @Operation(summary = "사용자 조회", description = "특정 사용자 정보를 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = MemberRequestDto.class))),
+        @ApiResponse(responseCode = "404", description = "Not Found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping("/find")
     public ResponseEntity<MemberInfo.MemberEntity> searchMember(
         @RequestBody MemberRequestDto body
@@ -76,10 +98,19 @@ public class MemberApiController {
      * 200 OK, response: [{name, email, address},...]
      * 404 not found, response:
      * */
+    @Operation(summary = "전체 사용자 조회", description = "전체 사용자를 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "404", description = "Not Found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/search")
     public ResponseEntity<List<MemberInfo.MemberEntity>> searchMembers(
+        @Parameter(description = "페이지")
         @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+        @Parameter(description = "페이지 수")
         @RequestParam(value = "size", required = false, defaultValue = "10") Integer size,
+        @Parameter(description = "페이지 정렬")
         @RequestParam(value = "reqSortDir", required = false, defaultValue = "desc") String reqSortDir
     ) {
         MemberCommand.SearchList command = new MemberCommand.SearchList(
@@ -102,6 +133,14 @@ public class MemberApiController {
      * 400 bad request
      * 404 not found, response:
     * */
+    @Operation(summary = "사용자 수정", description = "특정 사용자 정보를 수정")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = MemberRequestDto.class))),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "404", description = "Not Found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PutMapping("/update")
     public ResponseEntity<MemberInfo.MemberEntity> updateMember(
         @RequestBody MemberRequestDto body
@@ -124,6 +163,13 @@ public class MemberApiController {
      * 204 no content, response:
      * 404 not found, response:
      * */
+    @Operation(summary = "사용자 삭제", description = "특정 사용자를 삭제합니다")
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "No Content",
+                    content = @Content(mediaType = "application/json", schema = @Schema(implementation = MemberRequestDto.class))),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @DeleteMapping("/unregister")
     public ResponseEntity<Void> deleteMember(
         @RequestBody MemberRequestDto body
