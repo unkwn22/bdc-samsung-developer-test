@@ -3,7 +3,15 @@ package com.example.bdcsamsungdevelopertest.interfaces;
 import com.example.bdcsamsungdevelopertest.application.ProductFacade;
 import com.example.bdcsamsungdevelopertest.domain.command.ProductRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.ProductInfo;
+import com.example.bdcsamsungdevelopertest.interfaces.dto.DiscountRequestDto;
 import com.example.bdcsamsungdevelopertest.interfaces.dto.ProductRequestDto;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +20,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product/api/v1")
+@Tag(name = "상품 관련 API", description = "상품 관련 API")
 public class ProductApiController {
 
     private final ProductFacade productFacade;
@@ -28,6 +37,13 @@ public class ProductApiController {
      * 201 created: response: 생성된 상품 정보
      * 400 bad (유효성 검사 관련), response:
     * */
+    @Operation(summary = "상품 생성", description = "새로운 상품을 생성")
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "Created",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductRequestDto.class))),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @PostMapping("/register")
     public ResponseEntity<ProductInfo> registerProduct(
         @RequestBody ProductRequestDto body
@@ -48,8 +64,15 @@ public class ProductApiController {
      * 200 ok: response: 해당 상품 정보 (discount 포함)
      * 404 notfound, response:
      * */
+    @Operation(summary = "상품 조회", description = "특정 상품 정보를 조회")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "404", description = "Not Found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/{productId}")
     public ResponseEntity<ProductInfo> searchProduct(
+        @Parameter(description = "상품 id")
         @PathVariable("productId") Long id
     ) {
         ProductRequestCommand command = new ProductRequestCommand(id);
@@ -76,8 +99,16 @@ public class ProductApiController {
      * 400 bad, response: 유니크 하지 않는 상품명, 수정 가격이 할인 금액보다 작을 때
      * 404 not found, response: 없는 상품 대상으로 검색시
      * */
+    @Operation(summary = "상품 수정", description = "특정 상품 정보를 수정")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Ok",
+                content = @Content(mediaType = "application/json", schema = @Schema(implementation = ProductRequestDto.class))),
+        @ApiResponse(responseCode = "400", description = "Bad Request"),
+        @ApiResponse(responseCode = "404", description = "Not Found")
+    })
     @PutMapping("/{productId}")
     public ResponseEntity<ProductInfo> updateProduct(
+        @Parameter(description = "상품 id")
         @PathVariable("productId") Long id,
         @RequestBody ProductRequestDto body
     ) {
@@ -99,6 +130,12 @@ public class ProductApiController {
      *
      * 200 ok: response: [ {상품 정보, {해당 상품 정보 (discount 포함)}} ]
      * */
+    @Operation(summary = "상품 목록 조회", description = "모든 상품 목록을 조회합니다")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "OK"),
+        @ApiResponse(responseCode = "404", description = "Not Found"),
+        @ApiResponse(responseCode = "500", description = "Server error")
+    })
     @GetMapping("/products")
     public ResponseEntity<List<ProductInfo>> searchProducts() {
         List<ProductInfo> infos = productFacade.requestSearchProducts();
