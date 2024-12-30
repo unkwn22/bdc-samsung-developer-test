@@ -83,7 +83,8 @@ public class Product extends BaseTime {
      * */
     @OneToOne(
         cascade = CascadeType.ALL,
-        fetch = FetchType.EAGER
+        fetch = FetchType.EAGER,
+        orphanRemoval = true
     )
     @JoinColumn(name = "discount_id", nullable = true)
     protected Discount discount;

@@ -5,11 +5,11 @@ import java.util.Objects;
 public class DiscountInfo {
 
     public record DiscountEntity(
-        Long productId,
+        Long id,
         Integer discountValue
     ) {
         public DiscountEntity {
-            Objects.requireNonNull(productId);
+            Objects.requireNonNull(id);
             Objects.requireNonNull(discountValue);
         }
     }

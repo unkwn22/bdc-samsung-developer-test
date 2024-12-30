@@ -9,10 +9,8 @@ public class Discount extends BaseTime {
     public Discount() {}
 
     public Discount(
-        Product product,
         Integer discountValue
     ) {
-        this.product = product;
         this.discountValue = discountValue;
     }
 
@@ -29,12 +27,6 @@ public class Discount extends BaseTime {
     protected Integer discountValue;
 
     /**
-     * RELATIONS
-     * */
-    @OneToOne(mappedBy = "discount")
-    protected Product product;
-
-    /**
      * GETTERS
      * */
     public DiscountType getDiscountType() {
@@ -45,12 +37,12 @@ public class Discount extends BaseTime {
         return discountValue;
     }
 
-    public Product getProduct() {
-        return product;
-    }
-
     public enum DiscountType {
         AMOUNT,
+    }
+
+    public Long getId() {
+        return id;
     }
 
     /**
