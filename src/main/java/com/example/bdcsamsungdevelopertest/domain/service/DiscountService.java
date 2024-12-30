@@ -78,6 +78,16 @@ public class DiscountService {
         return toDiscountEntityCommand(savedDiscount, product.getId());
     }
 
+    @Transactional
+    public void findDiscountAndDelete(
+        DiscountRequestCommand deleteCommand
+    ) {
+        Discount discount = commonDiscountSearch(deleteCommand.getId());
+        discount.getProduct().setDiscount(null);
+        Discount savedDiscount = discountReadWrite.saveDiscount(discount);
+        discountReadWrite.deleteDiscount(savedDiscount);
+    }
+
     private Discount commonDiscountSearch(Long id) {
         Optional<Discount> searchedDiscountObject = discountReadWrite.findSpecificDiscount(id);
         return discountGetOrThrow(searchedDiscountObject);

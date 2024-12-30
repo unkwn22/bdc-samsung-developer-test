@@ -97,4 +97,20 @@ public class DiscountApiController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }
+
+    /**
+     * 특정 할인 정보 삭제
+     *
+     * 204 no content, response:
+     * 404 notfound, response:
+     * */
+    @DeleteMapping("/{discountId}")
+    public ResponseEntity<Void> deleteDiscount(
+            @PathVariable("discountId") Long id
+    ) {
+        DiscountRequestCommand command = new DiscountRequestCommand();
+        command.setId(id);
+        discountFacade.requestDiscountUnRegistration(command);
+        return ResponseEntity.noContent().build();
+    }
 }

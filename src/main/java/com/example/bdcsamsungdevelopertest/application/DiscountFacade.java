@@ -91,4 +91,13 @@ public class DiscountFacade {
         DiscountCommand.DiscountEntity discountEntityCommand = discountService.findDiscountAndValidatePriceThenUpdate(updateCommand);
         return discountService.toDiscountInfo(discountEntityCommand);
     }
+
+    /**
+     * 할인 정보 삭제 퍼사드
+     * */
+    public void requestDiscountUnRegistration(
+            DiscountRequestCommand deleteCommand
+    ) {
+        discountService.findDiscountAndDelete(deleteCommand);
+    }
 }

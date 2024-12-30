@@ -33,4 +33,9 @@ public class DiscountReadWriteImpl implements DiscountReadWrite {
     public Discount saveDiscount(Discount discount) {
         return discountRepository.save(discount);
     }
+
+    @Override
+    public void deleteDiscount(Discount discount) {
+        discountRepository.delete(discount);
+    }
 }

@@ -17,4 +17,6 @@ public interface DiscountReadWrite {
      * WRITE
      * */
     Discount saveDiscount(Discount discount);
+
+    void deleteDiscount(Discount discount);
 }
