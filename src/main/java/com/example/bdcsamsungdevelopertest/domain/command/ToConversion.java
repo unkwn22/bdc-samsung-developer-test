@@ -78,7 +78,7 @@ public class ToConversion {
         if(discountObject.isPresent()) {
             Discount discount = discountObject.get();
             DiscountCommand.DiscountEntity discountCommand
-                    = toDiscountEntityCommand(discount);
+                    = toDiscountEntityCommand(discount, product);
             command.setCommand(discountCommand);
         }
         return command;
@@ -241,11 +241,13 @@ public class ToConversion {
     }
 
     public static DiscountCommand.DiscountEntity toDiscountEntityCommand(
-            Discount discount
+            Discount discount,
+            Product product
     ) {
         return new DiscountCommand.DiscountEntity(
-                discount.getId(),
-                discount.getDiscountValue()
+            discount.getId(),
+            discount.getDiscountValue(),
+            product.getId()
         );
     }
 
@@ -253,7 +255,7 @@ public class ToConversion {
             DiscountCommand.DiscountEntity discountEntityCommand
     ) {
         return new DiscountInfo.DiscountEntity(
-                discountEntityCommand.id(),
+                discountEntityCommand.productId(),
                 discountEntityCommand.discountValue()
         );
     }
