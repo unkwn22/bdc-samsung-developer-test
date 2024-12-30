@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toProductInfo;
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toProductInfos;
+
 @Service
 public class ProductFacade {
 
@@ -36,7 +39,7 @@ public class ProductFacade {
         productService.validateDuplicateName(registerCommand.getName());
         productService.validatePriceRange(registerCommand.getPrice());
         ProductEntityCommand productEntityCommand = productService.createProduct(registerCommand);
-        return productService.toProductInfo(productEntityCommand);
+        return toProductInfo(productEntityCommand);
     }
 
     /**
@@ -52,7 +55,7 @@ public class ProductFacade {
         ProductRequestCommand searchCommand
     ) {
         ProductEntityCommand productEntityCommand = productService.searchProduct(searchCommand.getId());
-        return productService.toProductInfo(productEntityCommand);
+        return toProductInfo(productEntityCommand);
     }
 
     /**
@@ -72,7 +75,7 @@ public class ProductFacade {
         productService.validatePriceRange(updateCommand.getPrice());
         productService.findProductAndValidateNameThenUpdate(updateCommand);
         ProductEntityCommand productEntityCommand = productService.searchProduct(updateCommand.getId());
-        return productService.toProductInfo(productEntityCommand);
+        return toProductInfo(productEntityCommand);
     }
 
     /**
@@ -86,6 +89,6 @@ public class ProductFacade {
      * */
     public List<ProductInfo> requestSearchProducts() {
         List<ProductEntityCommand> productEntitiesCommand = productService.searchProducts();
-        return productService.toProductInfos(productEntitiesCommand);
+        return toProductInfos(productEntitiesCommand);
     }
 }
