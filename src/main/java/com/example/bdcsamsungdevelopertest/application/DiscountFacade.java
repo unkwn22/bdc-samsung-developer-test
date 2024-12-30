@@ -9,6 +9,8 @@ import com.example.bdcsamsungdevelopertest.domain.service.DiscountService;
 import com.example.bdcsamsungdevelopertest.domain.service.ProductService;
 import org.springframework.stereotype.Service;
 
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toProductInfo;
+
 @Service
 public class DiscountFacade {
 
@@ -54,7 +56,7 @@ public class DiscountFacade {
         DiscountRequestCommand searchCommand
     ) {
         ProductEntityCommand productEntityCommand = productService.searchProduct(searchCommand.getProductId());
-        ProductInfo productInfo = productService.toProductInfo(productEntityCommand);
+        ProductInfo productInfo = toProductInfo(productEntityCommand);
         discountService.extractAndValidateIfDiscountInfoExists(productInfo);
         return productInfo.getDiscountInfo();
     }
