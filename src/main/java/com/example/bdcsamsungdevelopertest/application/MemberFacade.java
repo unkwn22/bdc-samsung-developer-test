@@ -8,6 +8,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toMemberInfo;
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toMemberInfos;
+
 @Service
 public class MemberFacade {
 
@@ -38,7 +41,7 @@ public class MemberFacade {
         memberService.validateAddressLength(registerCommand.getAddress());
         registerCommand.setEmail(validatedParsedEmail);
         MemberCommand.MemberEntity memberEntityCommand = memberService.createMember(registerCommand);
-        return memberService.toMemberInfo(memberEntityCommand);
+        return toMemberInfo(memberEntityCommand);
     }
 
     /**
@@ -58,7 +61,7 @@ public class MemberFacade {
         String parsedEmail = memberService.validateEmailPatternAndReturnParsedEmail(searchCommand.getEmail());
         searchCommand.setEmail(parsedEmail);
         MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(searchCommand);
-        return memberService.toMemberInfo(memberEntityCommand);
+        return toMemberInfo(memberEntityCommand);
     }
 
     /**
@@ -74,7 +77,7 @@ public class MemberFacade {
         MemberCommand.SearchList searchListCommand
     ) {
         List<MemberCommand.MemberEntity> memberEntitiesCommand = memberService.searchMembers(searchListCommand);
-        return memberService.toMemberInfos(memberEntitiesCommand);
+        return toMemberInfos(memberEntitiesCommand);
     }
 
     /**
@@ -97,7 +100,7 @@ public class MemberFacade {
         updateCommand.setEmail(parsedEmail);
         memberService.findMemberAndUpdate(updateCommand);
         MemberCommand.MemberEntity memberEntityCommand = memberService.searchMember(updateCommand);
-        return memberService.toMemberInfo(memberEntityCommand);
+        return toMemberInfo(memberEntityCommand);
     }
 
     /**
