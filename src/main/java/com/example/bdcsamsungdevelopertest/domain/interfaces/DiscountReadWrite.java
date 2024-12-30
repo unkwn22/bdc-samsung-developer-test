@@ -11,6 +11,8 @@ public interface DiscountReadWrite {
      * */
     Optional<Discount> findSpecificDiscount(Product product);
 
+    Optional<Discount> findSpecificDiscount(Long id);
+
     /**
      * WRITE
      * */

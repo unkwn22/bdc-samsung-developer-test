@@ -59,6 +59,14 @@ public class DiscountService {
         return toDiscountEntityCommand(savedDiscount, product.getId());
     }
 
+    @Transactional(readOnly = true)
+    public DiscountCommand.DiscountEntity searchDiscount(Long id) {
+        Optional<Discount> searchedDiscountObject = discountReadWrite.findSpecificDiscount(id);
+        Discount discount = discountGetOrThrow(searchedDiscountObject);
+        Product product = discount.getProduct();
+        return toDiscountEntityCommand(discount, product.getId());
+    }
+
     /**
      * VALIDATION
      * */
@@ -77,6 +85,11 @@ public class DiscountService {
 
     public void extractAndValidateIfDiscountInfoExists(ProductInfo productInfo) {
         if(Optional.ofNullable(productInfo.getDiscountInfo()).isEmpty()) throw new NotFoundException("할인 정보가 존재하지 않습니다.");
+    }
+
+    public Discount discountGetOrThrow(Optional<Discount> searchedDiscountObject) {
+        if(searchedDiscountObject.isEmpty()) throw new NotFoundException("할인 정보가 존재하지 않습니다.");
+        return searchedDiscountObject.get();
     }
 
     /**

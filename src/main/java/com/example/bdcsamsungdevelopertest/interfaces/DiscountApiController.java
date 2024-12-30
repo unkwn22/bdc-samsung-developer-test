@@ -57,4 +57,23 @@ public class DiscountApiController {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }
+
+    /**
+     * 특정 할인 정보 조회
+     * ※ [GET] PathVariable {productId} Long 타입과 겹쳐서 하위 url에 추가
+     *
+     * PathVariable {discountId} (Long)
+     * 200 ok: response: { "productId": 1, "discountValue": 1000 }
+     * 404 notfound, response:
+     * */
+    @GetMapping("/byDiscount/{discountId}")
+    public ResponseEntity<DiscountInfo.DiscountEntity> searchDiscount(
+        @PathVariable("discountId") Long discountId
+    ) {
+        DiscountRequestCommand command = new DiscountRequestCommand();
+        command.setId(discountId);
+        DiscountInfo.DiscountEntity info = discountFacade.requestDiscountSearch(command);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(info);
+    }
 }

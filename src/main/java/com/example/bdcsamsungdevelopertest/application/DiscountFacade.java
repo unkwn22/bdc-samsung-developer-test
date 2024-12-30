@@ -50,12 +50,28 @@ public class DiscountFacade {
      * 3. 상품 info 추출하여 할인 정보 nullable 확인
      * 4. 반환
      * */
-    public DiscountInfo.DiscountEntity requestDiscountSearch(
+    public DiscountInfo.DiscountEntity requestDiscountSearchByProduct(
         DiscountRequestCommand searchCommand
     ) {
         ProductEntityCommand productEntityCommand = productService.searchProduct(searchCommand.getProductId());
         ProductInfo productInfo = productService.toProductInfo(productEntityCommand);
         discountService.extractAndValidateIfDiscountInfoExists(productInfo);
         return productInfo.getDiscountInfo();
+    }
+
+    /**
+     * 할인 정보 조회 퍼사드
+     *
+     * DESC: 특정 할인 정보 조회를 위한 집합 메소드
+     *
+     * ORDER:
+     * 1. 할인 id로 조회 및 command entity 반환
+     * 2. command entity로 info 변환 후 반환
+     * */
+    public DiscountInfo.DiscountEntity requestDiscountSearch(
+        DiscountRequestCommand searchCommand
+    ) {
+        DiscountCommand.DiscountEntity discountEntityCommand = discountService.searchDiscount(searchCommand.getId());
+        return discountService.toDiscountInfo(discountEntityCommand);
     }
 }

@@ -25,6 +25,11 @@ public class DiscountReadWriteImpl implements DiscountReadWrite {
     }
 
     @Override
+    public Optional<Discount> findSpecificDiscount(Long id) {
+        return discountRepository.findById(id);
+    }
+
+    @Override
     public Discount saveDiscount(Discount discount) {
         return discountRepository.save(discount);
     }
