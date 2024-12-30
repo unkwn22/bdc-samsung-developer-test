@@ -1,13 +1,7 @@
 package com.example.bdcsamsungdevelopertest.domain.command;
 
-import com.example.bdcsamsungdevelopertest.domain.entity.Discount;
-import com.example.bdcsamsungdevelopertest.domain.entity.Member;
-import com.example.bdcsamsungdevelopertest.domain.entity.OrderItem;
-import com.example.bdcsamsungdevelopertest.domain.entity.Orders;
-import com.example.bdcsamsungdevelopertest.domain.info.DiscountInfo;
-import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
-import com.example.bdcsamsungdevelopertest.domain.info.OrderItemInfo;
-import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
+import com.example.bdcsamsungdevelopertest.domain.entity.*;
+import com.example.bdcsamsungdevelopertest.domain.info.*;
 import com.example.bdcsamsungdevelopertest.domain.query.OrdersQueryEnum;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
@@ -15,6 +9,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.SAMSUNG_EMAIL;
@@ -60,6 +55,91 @@ public class ToConversion {
                 infos.add(toMemberInfo(iterateMemberCommand))
         );
         return infos;
+    }
+
+    /**
+     * 상품 command 생성자
+     *
+     * ORDER:
+     * 1. 인자로 받은 상품 정보 command로 변환
+     * 2. 할인 상품 객체 nullable 객체로 변환
+     * 3. 할인 상품이 null이 아닐때 discountService에 toDiscountEntityCommand 생성자로 discount 객체 넘김
+     * 4. 상품 command에 discountCommand set
+     * */
+    public static ProductEntityCommand toProductEntityCommand(
+            Product product
+    ) {
+        ProductEntityCommand command = new ProductEntityCommand(
+                product.getId(),
+                product.getName(),
+                product.getPrice()
+        );
+        Optional<Discount> discountObject = Optional.ofNullable(product.getDiscount());
+        if(discountObject.isPresent()) {
+            Discount discount = discountObject.get();
+            DiscountCommand.DiscountEntity discountCommand
+                    = toDiscountEntityCommand(discount);
+            command.setCommand(discountCommand);
+        }
+        return command;
+    }
+
+    /**
+     * 상품 info 생성자
+     *
+     * ORDER:
+     * 1. 인자로 받은 상품 command를 info로 변환
+     * 2. 할인 상품 command nullable 객체로 변환
+     * 3. 할인 상품 command가 null이 아닐때 discountService에 toDiscountInfo 생성자로 discountCommand 객체 넘김
+     * 4. 상품 info에 discountInfo set
+     * */
+    public static ProductInfo toProductInfo(
+            ProductEntityCommand productEntityCommand
+    ) {
+        ProductInfo info = new ProductInfo(
+                productEntityCommand.getName(),
+                productEntityCommand.getPrice()
+        );
+        Optional<DiscountCommand.DiscountEntity> discountCommandObject
+                = Optional.ofNullable(productEntityCommand.getDiscountCommand());
+        if(discountCommandObject.isPresent()) {
+            DiscountCommand.DiscountEntity discountCommand = discountCommandObject.get();
+            DiscountInfo.DiscountEntity discountInfo = toDiscountInfo(discountCommand);
+            info.setDiscountInfo(discountInfo);
+        }
+        return info;
+    }
+
+    public static List<ProductEntityCommand> toProductEntitiesCommand(
+            List<Product> products
+    ) {
+        List<ProductEntityCommand> command = new ArrayList<>();
+        products.forEach( iterateProduct ->
+                command.add(toProductEntityCommand(iterateProduct))
+        );
+        return command;
+    }
+
+    public static List<ProductInfo> toProductInfos(
+            List<ProductEntityCommand> productEntitiesCommand
+    ) {
+        List<ProductInfo> infos = new ArrayList<>();
+        productEntitiesCommand.forEach( iterateProductCommand ->
+                infos.add(toProductInfo(iterateProductCommand))
+        );
+        return infos;
+    }
+
+    public static Map<Long, ProductEntityCommand> toProductEntitiesCommandMap(
+            List<Product> products
+    ) {
+        return products.stream()
+                .collect(
+                        Collectors.toMap(
+                                Product::getId,
+                                ToConversion::toProductEntityCommand
+                        )
+                );
     }
 
     public static OrderItemCommand.OrderItemEntity toOrdersItemEntityCommand(
@@ -161,13 +241,11 @@ public class ToConversion {
     }
 
     public static DiscountCommand.DiscountEntity toDiscountEntityCommand(
-            Discount discount,
-            Long productId
+            Discount discount
     ) {
         return new DiscountCommand.DiscountEntity(
-                discount.getProduct().getId(),
-                discount.getDiscountValue(),
-                productId
+                discount.getId(),
+                discount.getDiscountValue()
         );
     }
 
@@ -175,7 +253,7 @@ public class ToConversion {
             DiscountCommand.DiscountEntity discountEntityCommand
     ) {
         return new DiscountInfo.DiscountEntity(
-                discountEntityCommand.productId(),
+                discountEntityCommand.id(),
                 discountEntityCommand.discountValue()
         );
     }

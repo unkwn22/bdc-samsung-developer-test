@@ -6,13 +6,11 @@ public class DiscountCommand {
 
     public record DiscountEntity(
         Long id,
-        Integer discountValue,
-        Long productId
+        Integer discountValue
     ) {
         public DiscountEntity {
             Objects.requireNonNull(id);
             Objects.requireNonNull(discountValue);
-            Objects.requireNonNull(productId);
         }
     }
 }
