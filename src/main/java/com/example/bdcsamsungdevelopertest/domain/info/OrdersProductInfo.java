@@ -2,7 +2,6 @@ package com.example.bdcsamsungdevelopertest.domain.info;
 
 import com.example.bdcsamsungdevelopertest.domain.entity.Orders;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,7 +23,7 @@ public class OrdersProductInfo {
 
     public record OrderItem(
         Long id,
-        LocalDateTime orderDate,
+        String orderDate,
         Integer quantity,
         Orders.OrderStatus orderStatus
     ) {

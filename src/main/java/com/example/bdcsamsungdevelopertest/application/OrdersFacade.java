@@ -1,5 +1,6 @@
 package com.example.bdcsamsungdevelopertest.application;
 
+import com.example.bdcsamsungdevelopertest.common.util.FileUtil;
 import com.example.bdcsamsungdevelopertest.domain.command.*;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersProductInfo;
@@ -119,4 +120,21 @@ public class OrdersFacade {
         productService.searchProduct(searchCommand.productId());
         return orderItemService.searchOrderItemGroup(searchCommand);
     }
+
+    public byte[] requestSearchOrderItemsGroupJson(
+        OrdersProductRequestCommand searchCommand
+    ) throws Exception {
+        productService.searchProduct(searchCommand.productId());
+        List<OrdersProductInfo.OrdersProduct> infos = orderItemService.searchOrderItemGroup(searchCommand);
+        return FileUtil.generateJsonFile(infos);
+    }
+
+    public byte[] requestSearchOrderItemsGroupCsv(
+        OrdersProductRequestCommand searchCommand
+    ) throws Exception {
+        productService.searchProduct(searchCommand.productId());
+        List<OrdersProductInfo.OrdersProduct> infos = orderItemService.searchOrderItemGroup(searchCommand);
+        return FileUtil.generateCsvFile(infos);
+    }
+
 }

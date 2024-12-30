@@ -14,6 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.SAMSUNG_EMAIL;
+import static com.example.bdcsamsungdevelopertest.common.util.FileUtil.DATE_FORMATTER;
 import static com.example.bdcsamsungdevelopertest.domain.query.OrderItemQueryEnum.*;
 
 public class ToConversion {
@@ -279,12 +280,13 @@ public class ToConversion {
             Tuple tuple = values.getFirst();
             Long id = tuple.get(Expressions.numberPath(Long.class, USER_ID.name()));
             String name = tuple.get(Expressions.stringPath(NAME.name()));
-            String email = tuple.get(Expressions.stringPath(EMAIL.name() + SAMSUNG_EMAIL));
+            String email = tuple.get(Expressions.stringPath(EMAIL.name())) + SAMSUNG_EMAIL;
             List<OrdersProductInfo.OrderItem> oderItemInfos = new ArrayList<>();
             for(Tuple valueTuple : values) {
+                LocalDateTime extractedTime = valueTuple.get(Expressions.datePath(LocalDateTime.class, ORDER_DATE.name()));
                 OrdersProductInfo.OrderItem orderItem = new OrdersProductInfo.OrderItem(
                     valueTuple.get(Expressions.numberPath(Long.class, ORDER_ID.name())),
-                    valueTuple.get(Expressions.datePath(LocalDateTime.class, ORDER_DATE.name())),
+                    extractedTime.format(DATE_FORMATTER),
                     valueTuple.get(Expressions.numberPath(Integer.class, QUANTITY.name())),
                     valueTuple.get(Expressions.enumPath(Orders.OrderStatus.class, ORDER_STATUS.name()))
                 );

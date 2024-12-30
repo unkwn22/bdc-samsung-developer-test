@@ -4,10 +4,15 @@ import com.example.bdcsamsungdevelopertest.application.OrdersFacade;
 import com.example.bdcsamsungdevelopertest.domain.command.OrdersProductRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Orders;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersProductInfo;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -48,4 +53,61 @@ public class OrdersProductApiController {
                 .body(infos);
     }
 
+    /**
+     * 상품별 주문 고객 목록 json 다운:
+     * 경로 변수: {productId} (Long)
+     * 쿼리 매개변수: orderStatus (String, 선택 - "CANCELLED", "ORDERED", "ALL". 기본값은 "ALL") - 각각 주문 취소된 주문, 주문 취소 안 된 주문, 모든 주문을 의미합니다.
+     * 응답:
+     * 200 OK:
+     * 404 Not Found: 상품이 존재하지 않는 경우.
+     * ※ pagination 내용은 없음으로 전체 리스트 조회
+     *
+     * */
+    @GetMapping("/json/{productId}")
+    public ResponseEntity<InputStreamResource> downloadJsonFileOrdersGroup (
+        @PathVariable("productId") Long productId,
+        @RequestParam(value = "orderStatus", required = false, defaultValue = "ALL") Orders.OrderStatus orderStatus
+    ) throws Exception {
+        OrdersProductRequestCommand command = new OrdersProductRequestCommand(
+                productId,
+                orderStatus
+        );
+        byte[] jsonData = ordersFacade.requestSearchOrderItemsGroupJson(command);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "application/json");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(jsonData.length)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(new InputStreamResource(new ByteArrayInputStream(jsonData)));
+    }
+
+    /**
+     * 상품별 주문 고객 목록 csv 다운:
+     * 경로 변수: {productId} (Long)
+     * 쿼리 매개변수: orderStatus (String, 선택 - "CANCELLED", "ORDERED", "ALL". 기본값은 "ALL") - 각각 주문 취소된 주문, 주문 취소 안 된 주문, 모든 주문을 의미합니다.
+     * 응답:
+     * 200 OK:
+     * 404 Not Found: 상품이 존재하지 않는 경우.
+     * ※ pagination 내용은 없음으로 전체 리스트 조회
+     *
+     * */
+    @GetMapping("/csv/{productId}")
+    public ResponseEntity<InputStreamResource> downloadCsvFileOrdersGroup (
+        @PathVariable("productId") Long productId,
+        @RequestParam(value = "orderStatus", required = false, defaultValue = "ALL") Orders.OrderStatus orderStatus
+    ) throws Exception {
+        OrdersProductRequestCommand command = new OrdersProductRequestCommand(
+                productId,
+                orderStatus
+        );
+        byte[] csvData = ordersFacade.requestSearchOrderItemsGroupCsv(command);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Content-Type", "text/csv");
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(csvData.length)
+                .contentType(MediaType.parseMediaType("text/csv"))
+                .body(new InputStreamResource(new ByteArrayInputStream(csvData)));
+    }
 }
