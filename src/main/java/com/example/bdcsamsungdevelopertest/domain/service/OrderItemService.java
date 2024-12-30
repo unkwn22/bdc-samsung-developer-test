@@ -3,18 +3,20 @@ package com.example.bdcsamsungdevelopertest.domain.service;
 import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import com.example.bdcsamsungdevelopertest.domain.command.OrderItemCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.OrderItemRequestCommand;
+import com.example.bdcsamsungdevelopertest.domain.command.OrdersProductRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.OrderItem;
 import com.example.bdcsamsungdevelopertest.domain.entity.Orders;
 import com.example.bdcsamsungdevelopertest.domain.entity.Product;
+import com.example.bdcsamsungdevelopertest.domain.info.OrdersProductInfo;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.OrderItemReadWrite;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.ProductReadWrite;
+import com.querydsl.core.Tuple;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
-import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toOrdersItemEntityCommand;
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.*;
 
 @Service
 public class OrderItemService {
@@ -49,6 +51,15 @@ public class OrderItemService {
         );
         OrderItem savedOrderItem = orderItemReadWrite.saveOrderItem(beforeSaveOrderItemEntity);
         return toOrdersItemEntityCommand(savedOrderItem);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrdersProductInfo.OrdersProduct> searchOrderItemGroup(
+        OrdersProductRequestCommand searchCommand
+    ) {
+        List<Tuple> tupleResult = orderItemReadWrite.customFindOrderItemGroup(searchCommand);
+        Map<Long, List<Tuple>> groupedTuples = ordersProductGroupedByUserId(tupleResult);
+        return toOrderItemInfoList(groupedTuples);
     }
 
     /**

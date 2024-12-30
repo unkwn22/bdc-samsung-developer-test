@@ -48,19 +48,19 @@ public class OrdersReadWriteQueryImpl implements OrdersQueryRepository {
     * */
     @Override
     public List<Tuple> findOrders(Long userId, Pageable pageable) {
-        return this.jpaQueryFactory.select(
-                    this.qOrders.id.as(Expressions.numberPath(Long.class, OrdersQueryEnum.ORDERS_ID.name())),
-                    this.qOrders.address.as(Expressions.stringPath(OrdersQueryEnum.ADDRESS.name())),
-                    this.qOrders.totalAmount.as(Expressions.numberPath(Long.class, OrdersQueryEnum.TOTAL_AMOUNT.name())),
-                    this.qMember.id.as(Expressions.numberPath(Long.class, OrdersQueryEnum.USER_ID.name())),
-                    this.qOrderItem.product.id.as(Expressions.numberPath(Long.class, OrdersQueryEnum.PRODUCT_ID.name())),
-                    this.qOrderItem.quantity.as(Expressions.numberPath(Integer.class, OrdersQueryEnum.QUANTITY.name()))
+        return jpaQueryFactory.select(
+                    qOrders.id.as(Expressions.numberPath(Long.class, OrdersQueryEnum.ORDERS_ID.name())),
+                    qOrders.address.as(Expressions.stringPath(OrdersQueryEnum.ADDRESS.name())),
+                    qOrders.totalAmount.as(Expressions.numberPath(Long.class, OrdersQueryEnum.TOTAL_AMOUNT.name())),
+                    qMember.id.as(Expressions.numberPath(Long.class, OrdersQueryEnum.USER_ID.name())),
+                    qOrderItem.product.id.as(Expressions.numberPath(Long.class, OrdersQueryEnum.PRODUCT_ID.name())),
+                    qOrderItem.quantity.as(Expressions.numberPath(Integer.class, OrdersQueryEnum.QUANTITY.name()))
                 )
-                .from(this.qOrders)
-                .leftJoin(this.qMember).on(this.qMember.id.eq(this.qOrders.member.id))
-                .leftJoin(this.qOrderItem).on(this.qOrderItem.orders.id.eq(this.qOrders.id))
-                .where(this.qMember.id.eq(userId))
-                .orderBy(this.qOrders.createDt.desc())
+                .from(qOrders)
+                .leftJoin(qMember).on(qMember.id.eq(qOrders.member.id))
+                .leftJoin(qOrderItem).on(qOrderItem.orders.id.eq(qOrders.id))
+                .where(qMember.id.eq(userId))
+                .orderBy(qOrders.createDt.desc())
                 .limit(pageable.getPageSize())
                 .offset((long) pageable.getPageNumber() * pageable.getPageSize())
                 .fetch();

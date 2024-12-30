@@ -6,6 +6,7 @@ import com.example.bdcsamsungdevelopertest.domain.query.OrdersQueryEnum;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +14,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.SAMSUNG_EMAIL;
+import static com.example.bdcsamsungdevelopertest.domain.query.OrderItemQueryEnum.*;
 
 public class ToConversion {
 
@@ -258,5 +260,44 @@ public class ToConversion {
                 discountEntityCommand.productId(),
                 discountEntityCommand.discountValue()
         );
+    }
+
+    public static Map<Long, List<Tuple>> ordersProductGroupedByUserId(List<Tuple> tupleResult) {
+        return tupleResult.stream()
+                .collect(Collectors.groupingBy(
+                    tuple -> Optional.ofNullable(tuple.get(Expressions.numberPath(Long.class, OrdersQueryEnum.USER_ID.name())))
+                        .orElse(0L)));
+    }
+
+    // TODO 설명 필요
+    public static List<OrdersProductInfo.OrdersProduct> toOrderItemInfoList (
+        Map<Long, List<Tuple>> groupedTuples
+    ) {
+        List<OrdersProductInfo.OrdersProduct> orderItemInfoList = new ArrayList<>();
+        for(Map.Entry<Long, List<Tuple>> entry : groupedTuples.entrySet()) {
+            List<Tuple> values = entry.getValue();
+            Tuple tuple = values.getFirst();
+            Long id = tuple.get(Expressions.numberPath(Long.class, USER_ID.name()));
+            String name = tuple.get(Expressions.stringPath(NAME.name()));
+            String email = tuple.get(Expressions.stringPath(EMAIL.name() + SAMSUNG_EMAIL));
+            List<OrdersProductInfo.OrderItem> oderItemInfos = new ArrayList<>();
+            for(Tuple valueTuple : values) {
+                OrdersProductInfo.OrderItem orderItem = new OrdersProductInfo.OrderItem(
+                    valueTuple.get(Expressions.numberPath(Long.class, ORDER_ID.name())),
+                    valueTuple.get(Expressions.datePath(LocalDateTime.class, ORDER_DATE.name())),
+                    valueTuple.get(Expressions.numberPath(Integer.class, QUANTITY.name())),
+                    valueTuple.get(Expressions.enumPath(Orders.OrderStatus.class, ORDER_STATUS.name()))
+                );
+                oderItemInfos.add(orderItem);
+            }
+            OrdersProductInfo.OrdersProduct ordersProduct = new OrdersProductInfo.OrdersProduct(
+                id,
+                name,
+                email,
+                oderItemInfos
+            );
+            orderItemInfoList.add(ordersProduct);
+        }
+        return orderItemInfoList;
     }
 }
