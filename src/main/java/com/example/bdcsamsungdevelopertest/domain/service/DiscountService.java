@@ -7,6 +7,7 @@ import com.example.bdcsamsungdevelopertest.domain.command.DiscountRequestCommand
 import com.example.bdcsamsungdevelopertest.domain.entity.Discount;
 import com.example.bdcsamsungdevelopertest.domain.entity.Product;
 import com.example.bdcsamsungdevelopertest.domain.info.DiscountInfo;
+import com.example.bdcsamsungdevelopertest.domain.info.ProductInfo;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.DiscountReadWrite;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.ProductReadWrite;
 import org.springframework.stereotype.Service;
@@ -72,6 +73,10 @@ public class DiscountService {
         Integer productPrice
     ) {
         if(requestIsBiggerThanTarget(discountPrice, productPrice)) throw new BadRequestException("요청하신 할인 금액이 상품 금액보다 급니다.");
+    }
+
+    public void extractAndValidateIfDiscountInfoExists(ProductInfo productInfo) {
+        if(Optional.ofNullable(productInfo.getDiscountInfo()).isEmpty()) throw new NotFoundException("할인 정보가 존재하지 않습니다.");
     }
 
     /**

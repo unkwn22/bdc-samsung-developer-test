@@ -11,9 +11,7 @@ public class DiscountRequestCommand {
         this.productId = productId;
         this.discountValue = discountValue;
     }
-    public DiscountRequestCommand(Long id) {
-        this.id = id;
-    }
+    public DiscountRequestCommand() {}
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public Integer getDiscountValue() { return discountValue; }

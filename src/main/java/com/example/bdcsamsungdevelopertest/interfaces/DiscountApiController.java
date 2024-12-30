@@ -6,10 +6,7 @@ import com.example.bdcsamsungdevelopertest.domain.info.DiscountInfo;
 import com.example.bdcsamsungdevelopertest.interfaces.dto.DiscountRequestDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/discount/api/v1")
@@ -39,6 +36,25 @@ public class DiscountApiController {
         );
         DiscountInfo.DiscountEntity info = discountFacade.requestDiscountRegistration(command);
         return ResponseEntity.status(HttpStatus.CREATED)
+                .body(info);
+    }
+
+    /**
+     * 특정 할인 정보 조회
+     * ※ [GET] PathVariable {discountId} Long 타입과 겹쳐서 하위 url에 추가
+     *
+     * PathVariable {productId} (Long)
+     * 200 ok: response: { "productId": 1, "discountValue": 1000 }
+     * 404 notfound, response:
+     * */
+    @GetMapping("/byProduct/{productId}")
+    public ResponseEntity<DiscountInfo.DiscountEntity> searchDiscountByProduct(
+        @PathVariable("productId") Long productId
+    ) {
+        DiscountRequestCommand command = new DiscountRequestCommand();
+        command.setProductId(productId);
+        DiscountInfo.DiscountEntity info = discountFacade.requestDiscountSearchByProduct(command);
+        return ResponseEntity.status(HttpStatus.OK)
                 .body(info);
     }
 }

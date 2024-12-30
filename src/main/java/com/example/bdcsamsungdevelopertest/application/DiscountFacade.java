@@ -2,19 +2,25 @@ package com.example.bdcsamsungdevelopertest.application;
 
 import com.example.bdcsamsungdevelopertest.domain.command.DiscountCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.DiscountRequestCommand;
+import com.example.bdcsamsungdevelopertest.domain.command.ProductEntityCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.DiscountInfo;
+import com.example.bdcsamsungdevelopertest.domain.info.ProductInfo;
 import com.example.bdcsamsungdevelopertest.domain.service.DiscountService;
+import com.example.bdcsamsungdevelopertest.domain.service.ProductService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DiscountFacade {
 
     private final DiscountService discountService;
+    private final ProductService productService;
 
     public DiscountFacade(
-        DiscountService discountService
+        DiscountService discountService,
+        ProductService productService
     ) {
         this.discountService = discountService;
+        this.productService = productService;
     }
 
     /**
@@ -31,5 +37,25 @@ public class DiscountFacade {
     ) {
         DiscountCommand.DiscountEntity discountEntityCommand = discountService.validateAndCreateDiscount(registerCommand);
         return discountService.toDiscountInfo(discountEntityCommand);
+    }
+
+    /**
+     * 할인 정보 조회 퍼사드
+     *
+     * DESC: 특정 할인 정보 조회를 위한 집합 메소드
+     *
+     * ORDER:
+     * 1. 상품 정보 조회 command 반환 (command 변환 하면서 discount도 command화 해서 캡슐화)
+     * 2. 상품 command로 상품 info 변환
+     * 3. 상품 info 추출하여 할인 정보 nullable 확인
+     * 4. 반환
+     * */
+    public DiscountInfo.DiscountEntity requestDiscountSearch(
+        DiscountRequestCommand searchCommand
+    ) {
+        ProductEntityCommand productEntityCommand = productService.searchProduct(searchCommand.getProductId());
+        ProductInfo productInfo = productService.toProductInfo(productEntityCommand);
+        discountService.extractAndValidateIfDiscountInfoExists(productInfo);
+        return productInfo.getDiscountInfo();
     }
 }
