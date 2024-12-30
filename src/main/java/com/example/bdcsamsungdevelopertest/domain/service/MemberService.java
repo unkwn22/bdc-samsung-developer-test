@@ -5,19 +5,18 @@ import com.example.bdcsamsungdevelopertest.common.exception.NotFoundException;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.MemberRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.entity.Member;
-import com.example.bdcsamsungdevelopertest.domain.info.MemberInfo;
 import com.example.bdcsamsungdevelopertest.domain.interfaces.MemberReadWrite;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.EMAIL_PATTERN_REGEX;
-import static com.example.bdcsamsungdevelopertest.common.util.EmailStaticValue.SAMSUNG_EMAIL;
 import static com.example.bdcsamsungdevelopertest.common.util.StringUtilExtension.subStringEmail;
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toMemberEntitiesCommand;
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toMemberEntityCommand;
 
 @Service
 public class MemberService {
@@ -157,46 +156,6 @@ public class MemberService {
     /**
     * CONSTRUCTOR & METHODS
     * */
-    public MemberCommand.MemberEntity toMemberEntityCommand(
-        Member member
-    ) {
-        return new MemberCommand.MemberEntity(
-            member.getId(),
-            member.getName(),
-            member.getEmail(),
-            member.getAddress()
-        );
-    }
-
-    public MemberInfo.MemberEntity toMemberInfo(
-        MemberCommand.MemberEntity memberEntityCommand
-    ) {
-        return new MemberInfo.MemberEntity(
-            memberEntityCommand.name(),
-            memberEntityCommand.email() + SAMSUNG_EMAIL,
-            memberEntityCommand.address()
-        );
-    }
-
-    public List<MemberCommand.MemberEntity> toMemberEntitiesCommand(
-        List<Member> members
-    ) {
-        List<MemberCommand.MemberEntity> command = new ArrayList<>();
-        members.forEach( iterateMember ->
-            command.add(toMemberEntityCommand(iterateMember))
-        );
-        return command;
-    }
-
-    public List<MemberInfo.MemberEntity> toMemberInfos(
-        List<MemberCommand.MemberEntity> memberEntitiesCommand
-    ) {
-        List<MemberInfo.MemberEntity> infos = new ArrayList<>();
-        memberEntitiesCommand.forEach( iterateMemberCommand ->
-            infos.add(toMemberInfo(iterateMemberCommand))
-        );
-        return infos;
-    }
 
     /**
      * 이메일 파싱

@@ -17,6 +17,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.example.bdcsamsungdevelopertest.common.util.StringUtilExtension.validateIfBothContentMatches;
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toDiscountEntityCommand;
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toDiscountInfo;
 
 @Service
 public class ProductService {
@@ -153,7 +155,7 @@ public class ProductService {
         if(discountObject.isPresent()) {
             Discount discount = discountObject.get();
             DiscountCommand.DiscountEntity discountCommand
-                    = discountService.toDiscountEntityCommand(discount, product.getId());
+                    = toDiscountEntityCommand(discount, product.getId());
             command.setCommand(discountCommand);
         }
         return command;
@@ -179,7 +181,7 @@ public class ProductService {
                 = Optional.ofNullable(productEntityCommand.getDiscountCommand());
         if(discountCommandObject.isPresent()) {
             DiscountCommand.DiscountEntity discountCommand = discountCommandObject.get();
-            DiscountInfo.DiscountEntity discountInfo = discountService.toDiscountInfo(discountCommand);
+            DiscountInfo.DiscountEntity discountInfo = toDiscountInfo(discountCommand);
             info.setDiscountInfo(discountInfo);
         }
         return info;
