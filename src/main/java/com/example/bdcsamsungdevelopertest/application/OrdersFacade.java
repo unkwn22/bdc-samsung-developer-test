@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toOrdersInfo;
+
 @Service
 public class OrdersFacade {
 
@@ -56,7 +58,7 @@ public class OrdersFacade {
                 resOfProdEntComMapSeWithReqIdsMap
         );
         OrdersCommand.OrdersEntity ordersEntityCommand = ordersService.createOrdersWithRelations(finalRegisterCommand);
-        return ordersService.toOrdersInfo(ordersEntityCommand);
+        return toOrdersInfo(ordersEntityCommand);
     }
 
     /**
@@ -72,7 +74,7 @@ public class OrdersFacade {
         OrdersRequestCommand searchCommand
     ) {
         OrdersCommand.OrdersEntity ordersEntityCommand = ordersService.searchOrders(searchCommand.getId());
-        return ordersService.toOrdersInfo(ordersEntityCommand);
+        return toOrdersInfo(ordersEntityCommand);
     }
 
     /**
