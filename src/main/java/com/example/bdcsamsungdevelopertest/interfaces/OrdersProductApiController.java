@@ -75,6 +75,7 @@ public class OrdersProductApiController {
         byte[] jsonData = ordersFacade.requestSearchOrderItemsGroupJson(command);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "application/json");
+        headers.add("Content-Disposition", "attachment; filename=file.json");
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(jsonData.length)
@@ -104,6 +105,7 @@ public class OrdersProductApiController {
         byte[] csvData = ordersFacade.requestSearchOrderItemsGroupCsv(command);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-Type", "text/csv");
+        headers.add("Content-Disposition", "attachment; filename=file.csv");
         return ResponseEntity.ok()
                 .headers(headers)
                 .contentLength(csvData.length)
