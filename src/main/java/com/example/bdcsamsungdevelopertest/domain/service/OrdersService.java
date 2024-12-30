@@ -50,18 +50,18 @@ public class OrdersService {
             registerCommand.getTotalAmount(),
             registerCommand.getAddress()
         );
-        Orders orders = ordersReadWrite.saveOrders(beforeSaveOrdersEntity);                                     // [3] Orders 저장
-        Long ordersId = orders.getId();                                                                         // [4] Orders id 추출 후 로컬 변수 선언
+        Orders savedOrders = ordersReadWrite.saveOrders(beforeSaveOrdersEntity);                                // [3] Orders 저장
+        Long ordersId = savedOrders.getId();                                                                    // [4] Orders id 추출 후 로컬 변수 선언
         List<OrderItemRequestCommand> orderItemsRequestCommand = registerCommand.getOrderItemsRequestCommand(); // [5] 요청한 OrderItems command 리스트 객체 로컬 변수 선언
 
         List<OrderItemCommand.OrderItemEntity> orderItemCommand = new ArrayList<>();                            // [6] 반환할 orderItemEntityCommand 리스트 선언
         for(OrderItemRequestCommand orderItemRequestCommand : orderItemsRequestCommand) {                       // [7] 요청 OrderItems command 리스트 만큼 루프
             orderItemRequestCommand.setOrdersId(ordersId);                                                      // [8] 저장 된 Orders Id orderItem command에 set
-            orderItemCommand.add(orderItemService.createOrderItem(orderItemRequestCommand, orders));            // [9] OrderItem 저장 후 OrderItemEntityCommand 반환받고 [6]에 추가
+            orderItemCommand.add(orderItemService.createOrderItem(orderItemRequestCommand, savedOrders));       // [9] OrderItem 저장 후 OrderItemEntityCommand 반환받고 [6]에 추가
         }
 
         return new OrdersCommand.OrdersEntity(                                                                  // [10] OrdersEntityCommand 객체로 변환 후 반환
-            orders.getId(),
+            savedOrders.getId(),
             memberService.toMemberEntityCommand(member),
             registerCommand.getTotalAmount(),
             registerCommand.getAddress(),

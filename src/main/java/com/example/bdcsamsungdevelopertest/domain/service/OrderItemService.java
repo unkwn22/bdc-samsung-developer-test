@@ -49,8 +49,8 @@ public class OrderItemService {
             orders,
             product
         );
-        OrderItem orderItem = orderItemReadWrite.saveOrderItem(beforeSaveOrderItemEntity);
-        return toOrdersItemEntityCommand(orderItem);
+        OrderItem savedOrderItem = orderItemReadWrite.saveOrderItem(beforeSaveOrderItemEntity);
+        return toOrdersItemEntityCommand(savedOrderItem);
     }
 
     /**
