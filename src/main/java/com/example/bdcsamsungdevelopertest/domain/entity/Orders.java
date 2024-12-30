@@ -111,6 +111,7 @@ public class Orders extends BaseTime {
     public enum OrderStatus {
         ORDERED,
         CANCELLED,
+        ALL,
     }
 
     /**

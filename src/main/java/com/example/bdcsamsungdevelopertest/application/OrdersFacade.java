@@ -1,7 +1,9 @@
 package com.example.bdcsamsungdevelopertest.application;
 
+import com.example.bdcsamsungdevelopertest.common.util.FileUtil;
 import com.example.bdcsamsungdevelopertest.domain.command.*;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
+import com.example.bdcsamsungdevelopertest.domain.info.OrdersProductInfo;
 import com.example.bdcsamsungdevelopertest.domain.service.MemberService;
 import com.example.bdcsamsungdevelopertest.domain.service.OrderItemService;
 import com.example.bdcsamsungdevelopertest.domain.service.OrdersService;
@@ -104,4 +106,35 @@ public class OrdersFacade {
         memberService.searchMember(searchListCommand.userId());
         return ordersService.searchOrders(searchListCommand);
     }
+
+    /**
+     * 상품별 주문 고객 목록 조회
+     *
+     * ORDER:
+     * 1. 상품 유효성 검사
+     * 2. 상품별 주문 고객목록 조회 쿼리
+     * */
+    public List<OrdersProductInfo.OrdersProduct> requestSearchOrderItemsGroup(
+        OrdersProductRequestCommand searchCommand
+    ) {
+        productService.searchProduct(searchCommand.productId());
+        return orderItemService.searchOrderItemGroup(searchCommand);
+    }
+
+    public byte[] requestSearchOrderItemsGroupJson(
+        OrdersProductRequestCommand searchCommand
+    ) throws Exception {
+        productService.searchProduct(searchCommand.productId());
+        List<OrdersProductInfo.OrdersProduct> infos = orderItemService.searchOrderItemGroup(searchCommand);
+        return FileUtil.generateJsonFile(infos);
+    }
+
+    public byte[] requestSearchOrderItemsGroupCsv(
+        OrdersProductRequestCommand searchCommand
+    ) throws Exception {
+        productService.searchProduct(searchCommand.productId());
+        List<OrdersProductInfo.OrdersProduct> infos = orderItemService.searchOrderItemGroup(searchCommand);
+        return FileUtil.generateCsvFile(infos);
+    }
+
 }
