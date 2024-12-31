@@ -1,8 +1,10 @@
 package com.example.bdcsamsungdevelopertest.domain.command;
 
+import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import com.example.bdcsamsungdevelopertest.domain.entity.*;
 import com.example.bdcsamsungdevelopertest.domain.info.*;
 import com.example.bdcsamsungdevelopertest.domain.query.OrdersQueryEnum;
+import com.example.bdcsamsungdevelopertest.interfaces.dto.OrdersRequestDto;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.Expressions;
 
@@ -301,5 +303,19 @@ public class ToConversion {
             orderItemInfoList.add(ordersProduct);
         }
         return orderItemInfoList;
+    }
+
+    public static List<OrderItemRequestCommand> toOrderItemsCommand(
+            List<OrdersRequestDto.OrderItem> orderItemDtoList
+    ) {
+        if(orderItemDtoList.isEmpty()) throw new BadRequestException("등록할 주문 상품이 없습니다.");
+        return orderItemDtoList.stream()
+                .map( orderItemDto ->
+                    new OrderItemRequestCommand(
+                        orderItemDto.productId(),
+                        orderItemDto.quantity()
+                    )
+                )
+                .collect(Collectors.toList());
     }
 }
