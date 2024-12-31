@@ -43,8 +43,9 @@ public class DiscountApiController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
     public ResponseEntity<DiscountInfo.DiscountEntity> registerDiscount(
+        @PathVariable(value = "hi") String hi,
         @RequestBody DiscountRequestDto.DiscountCreate body
     ) {
         DiscountRequestCommand command = new DiscountRequestCommand(
@@ -70,10 +71,11 @@ public class DiscountApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/byProduct/{productId}")
+    @GetMapping(value ="/byProduct/{productId}")
     public ResponseEntity<DiscountInfo.DiscountEntity> searchDiscountByProduct(
         @Parameter(description = "상품 id")
-        @PathVariable("productId") Long productId
+        @PathVariable("productId") Long productId,
+        @RequestBody DiscountRequestDto body
     ) {
         DiscountRequestCommand command = new DiscountRequestCommand();
         command.setProductId(productId);
@@ -96,7 +98,7 @@ public class DiscountApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/byDiscount/{discountId}")
+    @GetMapping(value ="/byDiscount/{discountId}")
     public ResponseEntity<DiscountInfo.DiscountEntity> searchDiscount(
         @Parameter(description = "할인 id")
         @PathVariable("discountId") Long discountId
@@ -124,7 +126,7 @@ public class DiscountApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PutMapping("/{discountId}")
+    @PutMapping(value ="/{discountId}")
     public ResponseEntity<DiscountInfo.DiscountEntity> updateDiscount(
         @Parameter(description = "할인 id")
         @PathVariable("discountId") Long discountId,
@@ -150,7 +152,7 @@ public class DiscountApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @DeleteMapping("/{discountId}")
+    @DeleteMapping(value = "/{discountId}")
     public ResponseEntity<Void> deleteDiscount(
         @Parameter(description = "할인 id")
         @PathVariable("discountId") Long id

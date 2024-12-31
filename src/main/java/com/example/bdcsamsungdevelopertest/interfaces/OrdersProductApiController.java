@@ -49,7 +49,7 @@ public class OrdersProductApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/{productId}")
+    @GetMapping(value = "/{productId}")
     public ResponseEntity<List<OrdersProductInfo.OrdersProduct>> searchOrdersGroup(
         @Parameter(description = "상품 id")
         @PathVariable("productId") Long productId,
@@ -82,7 +82,7 @@ public class OrdersProductApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/json/{productId}")
+    @GetMapping(value = "/json/{productId}")
     public ResponseEntity<InputStreamResource> downloadJsonFileOrdersGroup (
         @Parameter(description = "상품 id")
         @PathVariable("productId") Long productId,
@@ -120,7 +120,7 @@ public class OrdersProductApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/csv/{productId}")
+    @GetMapping(value = "/csv/{productId}")
     public ResponseEntity<InputStreamResource> downloadCsvFileOrdersGroup (
         @Parameter(description = "상품 id")
         @PathVariable("productId") Long productId,

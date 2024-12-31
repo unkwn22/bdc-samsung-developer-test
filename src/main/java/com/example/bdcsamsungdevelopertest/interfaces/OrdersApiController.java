@@ -58,7 +58,7 @@ public class OrdersApiController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
     public ResponseEntity<OrdersInfo.OrdersEntity> registerOrder(
         @RequestBody OrdersRequestDto.Orders body
     ) {
@@ -84,7 +84,7 @@ public class OrdersApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/{orderId}")
+    @GetMapping(value = "/{orderId}")
     public ResponseEntity<OrdersInfo.OrdersEntity> searchOrders(
         @Parameter(description = "주문 id")
         @PathVariable("orderId") Long id
@@ -108,7 +108,7 @@ public class OrdersApiController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PutMapping("/{orderId}")
+    @PutMapping(value = "/{orderId}")
     public ResponseEntity<CommonResponse> cancelOrders(
         @Parameter(description = "주문 id")
         @PathVariable("orderId") Long id
@@ -133,7 +133,7 @@ public class OrdersApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/search")
+    @GetMapping(value = "/search")
     public ResponseEntity<List<OrdersInfo.OrdersEntity>>
     searchOrdersList(
         @Parameter(description = "유저 id")

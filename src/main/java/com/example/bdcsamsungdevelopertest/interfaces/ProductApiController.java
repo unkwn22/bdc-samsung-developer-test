@@ -44,7 +44,7 @@ public class ProductApiController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
     public ResponseEntity<ProductInfo> registerProduct(
         @RequestBody ProductRequestDto body
     ) {
@@ -70,7 +70,7 @@ public class ProductApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/{productId}")
+    @GetMapping(value = "/{productId}")
     public ResponseEntity<ProductInfo> searchProduct(
         @Parameter(description = "상품 id")
         @PathVariable("productId") Long id
@@ -106,7 +106,7 @@ public class ProductApiController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "404", description = "Not Found")
     })
-    @PutMapping("/{productId}")
+    @PutMapping(value = "/{productId}")
     public ResponseEntity<ProductInfo> updateProduct(
         @Parameter(description = "상품 id")
         @PathVariable("productId") Long id,
@@ -136,7 +136,7 @@ public class ProductApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/products")
+    @GetMapping(value = "/products")
     public ResponseEntity<List<ProductInfo>> searchProducts() {
         List<ProductInfo> infos = productFacade.requestSearchProducts();
         return ResponseEntity.status(HttpStatus.OK)

@@ -45,7 +45,7 @@ public class MemberApiController {
         @ApiResponse(responseCode = "400", description = "Bad Request"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PostMapping("/register")
+    @PostMapping(value = "/register")
     public ResponseEntity<MemberInfo.MemberEntity> registerMember(
         @RequestBody MemberRequestDto body
     ) {
@@ -73,7 +73,7 @@ public class MemberApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PostMapping("/find")
+    @PostMapping(value = "/find")
     public ResponseEntity<MemberInfo.MemberEntity> searchMember(
         @RequestBody MemberRequestDto body
     ) {
@@ -104,7 +104,7 @@ public class MemberApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @GetMapping("/search")
+    @GetMapping(value = "/search")
     public ResponseEntity<List<MemberInfo.MemberEntity>> searchMembers(
         @Parameter(description = "페이지")
         @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
@@ -141,7 +141,7 @@ public class MemberApiController {
         @ApiResponse(responseCode = "404", description = "Not Found"),
         @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @PutMapping("/update")
+    @PutMapping(value = "/update")
     public ResponseEntity<MemberInfo.MemberEntity> updateMember(
         @RequestBody MemberRequestDto body
     ) {
@@ -170,7 +170,7 @@ public class MemberApiController {
             @ApiResponse(responseCode = "404", description = "Not Found"),
             @ApiResponse(responseCode = "500", description = "Server error")
     })
-    @DeleteMapping("/unregister")
+    @DeleteMapping(value = "/unregister")
     public ResponseEntity<Void> deleteMember(
         @RequestBody MemberRequestDto body
     ) {
