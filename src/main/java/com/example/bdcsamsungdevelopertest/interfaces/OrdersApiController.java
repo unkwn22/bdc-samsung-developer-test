@@ -1,10 +1,8 @@
 package com.example.bdcsamsungdevelopertest.interfaces;
 
 import com.example.bdcsamsungdevelopertest.application.OrdersFacade;
-import com.example.bdcsamsungdevelopertest.common.exception.BadRequestException;
 import com.example.bdcsamsungdevelopertest.common.response.CommonResponse;
 import com.example.bdcsamsungdevelopertest.common.util.PageableExtension;
-import com.example.bdcsamsungdevelopertest.domain.command.OrderItemRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.OrdersCommand;
 import com.example.bdcsamsungdevelopertest.domain.command.OrdersRequestCommand;
 import com.example.bdcsamsungdevelopertest.domain.info.OrdersInfo;
@@ -21,7 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static com.example.bdcsamsungdevelopertest.domain.command.ToConversion.toOrderItemsCommand;
 
 @RestController
 @RequestMapping("/orders/api/v1")
@@ -151,20 +150,5 @@ public class OrdersApiController {
         List<OrdersInfo.OrdersEntity> infos = ordersFacade.requestOrdersListSearch(command);
         return ResponseEntity.status(HttpStatus.OK)
                 .body(infos);
-    }
-
-
-    private List<OrderItemRequestCommand> toOrderItemsCommand(
-        List<OrdersRequestDto.OrderItem> orderItemDtoList
-    ) {
-        if(orderItemDtoList.isEmpty()) throw new BadRequestException("등록할 주문 상품이 없습니다.");
-        return orderItemDtoList.stream()
-                .map( orderItemDto ->
-                        new OrderItemRequestCommand(
-                                orderItemDto.productId(),
-                                orderItemDto.quantity()
-                        )
-                )
-                .collect(Collectors.toList());
     }
 }
